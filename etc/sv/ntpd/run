@@ -1,4 +1,0 @@
-#!/bin/sh
-nsenter -t 1 -m -u -n -i ntpd -qxg
-exec 2>&1
-exec isc-ntpd -g -u ntpd:ntpd -n >/dev/null 2>&1

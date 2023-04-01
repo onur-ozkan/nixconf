@@ -1,4 +1,3 @@
-# Default colors
 xrdb -load ~/.Xresources
 
 # Compositor
