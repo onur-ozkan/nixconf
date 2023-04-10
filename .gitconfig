@@ -10,5 +10,9 @@
 [user]
 	email = work@onurozkan.dev
 	name = ozkanonur
+
 [pull]
 	rebase = false
+
+[merge]
+	tool = vimdiff
