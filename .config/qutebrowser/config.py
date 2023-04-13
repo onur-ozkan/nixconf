@@ -1,5 +1,9 @@
 # nimda.vim implementation for qutebrowser
 def init(c, options = {}):
+    c.url.searchengines = {
+        'DEFAULT': 'https://www.google.com/search?q={}',
+    }
+
     c.content.autoplay = False
 
     c.content.blocking.method = 'adblock'
