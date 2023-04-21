@@ -1,1 +1,22 @@
 Xft.dpi: 170
+
+*.foreground:  #eeeeee
+*.background:  #212121
+*.cursorColor: #eeeeee
+
+*.color0:       #212121
+*.color1:       #d75f5f
+*.color2:       #87af5f
+*.color3:       #f7ca88
+*.color4:       #8197bf
+*.color5:       #a293cb
+*.color6:       #616161
+*.color7:       #dddddd
+*.color8:       #616161
+*.color9:       #d75f5f
+*.color10:      #87af5f
+*.color11:      #f7ca88
+*.color12:      #8197bf
+*.color13:      #a293cb
+*.color14:      #f7ca88
+*.color15:      #eeeeee
