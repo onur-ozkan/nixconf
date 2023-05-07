@@ -1,3 +1,0 @@
-#!/bin/sh
-
-st -e zsh -c 'tmux new-session nnn -a -P p '$1'; read;' &
