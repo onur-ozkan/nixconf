@@ -7,7 +7,11 @@ sbs ~/.backgrounds/.firewatch-dark.jpg
 
 dwmblocks &
 
-sleep 4
+pipewire &
+sleep 2
+pipewire-pulse &
+sleep 2
+wireplumber &
 
 # Trigger volume on dwmblokcs
 kill -44 $(pidof dwmblocks)

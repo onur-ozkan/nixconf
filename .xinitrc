@@ -6,9 +6,6 @@ picom -b
 
 # Audio
 export XDG_RUNTIME_DIR=/home/nimda/.xdg-override
-exec pipewire &
-exec pipewire-pulse &
-exec wireplumber &
 
 # WM
 exec dbus-run-session dwm
