@@ -63,7 +63,7 @@ require'nvim-tree'.setup {
 		auto_open = false,
 	},
 	update_focused_file = {
-		enable = false,
+		enable = true,
 		update_cwd = false,
 		ignore_list = {},
 	},

@@ -85,11 +85,13 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = false -- turn off snippets
 
 cmp.setup({
-    completion = {autocomplete = true},
+    completion = {
+        autocomplete = true
+    },
     mapping = {
         ['<Tab>'] = function(fallback)
             if cmp.visible() then
-                cmp.select_next_item({behavior = cmp.SelectBehavior.Select})
+                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
             elseif has_words_before() then
                 cmp.complete()
             else
@@ -98,19 +100,25 @@ cmp.setup({
         end,
         ['<S-Tab>'] = function(fallback)
             if cmp.visible() then
-                cmp.select_prev_item({behavior = cmp.SelectBehavior.Select})
+                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
             elseif has_words_before() then
                 cmp.complete()
             else
                 fallback()
             end
-        end,
-        ['<CR>'] = cmp.mapping.confirm {
-            behavior = cmp.ConfirmBehavior.Insert,
-            select = true
-        }
+		end,
+		['<CR>'] = cmp.mapping.confirm {
+      		behavior = cmp.ConfirmBehavior.Insert,
+      		select = true,
+    	},
     },
-    sources = {{name = 'nvim_lsp'}, {name = 'buffer'}, {name = 'path'}},
+    sources = {{
+        name = 'nvim_lsp'
+    }, {
+        name = 'buffer'
+    }, {
+        name = 'path'
+    }},
     formatting = {
         format = function(entry, vim_item)
             vim_itemmenu = ({
@@ -135,16 +143,20 @@ vim.cmd [[
 
 -- c/cpp
 lspconfig.ccls.setup {
-    cmd = {'ccls'},
+	cmd = { 'ccls' },
     on_attach = on_attach,
-    capabilities = capabilities,
-    init_options = {cache = {directory = ".cache"}},
-    clang = {
-        excludeArgs = {"-frounding-math"},
-        extraArgs = {"--gcc-toolchain=/usr"}
+	capabilities = capabilities,
+    init_options = {
+        cache = {
+            directory = ".cache"
+        }
     },
-    default_config = {
-        root_dir = [[root_pattern("compile_commands.json", ".ccls", ".git")]]
+	clang = {
+		excludeArgs = { "-frounding-math"},
+		extraArgs = { "--gcc-toolchain=/usr"}
+    },
+	default_config = {
+      root_dir = [[root_pattern("compile_commands.json", ".ccls", ".git")]]
     }
 }
 -- c/cpp
@@ -152,14 +164,20 @@ lspconfig.ccls.setup {
 -- rust
 lspconfig.rust_analyzer.setup {
     on_attach = on_attach,
-    capabilities = capabilities
+	capabilities = capabilities
 }
 -- rust
 
 -- golang
-lspconfig.gopls.setup {on_attach = on_attach, capabilities = capabilities}
+lspconfig.gopls.setup {
+    on_attach = on_attach,
+	capabilities = capabilities
+}
 -- golang
 
 -- python
-lspconfig.pyright.setup {on_attach = on_attach, capabilities = capabilities}
+lspconfig.pyright.setup {
+    on_attach = on_attach,
+	capabilities = capabilities
+}
 -- python
