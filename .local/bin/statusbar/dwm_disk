@@ -1,0 +1,4 @@
+#!/bin/bash
+
+icon=""
+printf "$icon $(df -H . | tail -n1 | awk '{print "^c#87af5f^"$3 "gb^d^/" "^c#87afd7^"$2 "gb"}')^d^"
