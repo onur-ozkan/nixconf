@@ -143,6 +143,7 @@ vim.cmd [[
 
 -- c/cpp
 lspconfig.ccls.setup {
+	autostart = false,
 	cmd = { 'ccls' },
     on_attach = on_attach,
 	capabilities = capabilities,
@@ -163,6 +164,7 @@ lspconfig.ccls.setup {
 
 -- rust
 lspconfig.rust_analyzer.setup {
+	autostart = false,
     on_attach = on_attach,
 	capabilities = capabilities
 }
@@ -170,6 +172,7 @@ lspconfig.rust_analyzer.setup {
 
 -- golang
 lspconfig.gopls.setup {
+	autostart = false,
     on_attach = on_attach,
 	capabilities = capabilities
 }
@@ -177,6 +180,7 @@ lspconfig.gopls.setup {
 
 -- python
 lspconfig.pyright.setup {
+	autostart = false,
     on_attach = on_attach,
 	capabilities = capabilities
 }
