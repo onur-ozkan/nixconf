@@ -97,7 +97,6 @@ call plug#end()
 
 	set backspace=indent,eol,start
 	set autoindent noexpandtab tabstop=4 shiftwidth=4
-	set textwidth=80
 	set title
 
 	set hidden
