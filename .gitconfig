@@ -16,3 +16,9 @@
 
 [merge]
 	tool = vimdiff
+
+[sendemail]
+	smtpencryption = tls
+	smtpserver = smtp.yandex.com
+	smtpuser = work@onurozkan.dev
+	smtpserverport = 587
