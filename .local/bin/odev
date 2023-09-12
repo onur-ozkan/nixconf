@@ -1,4 +1,0 @@
-#!/bin/sh
-
-dmenu_input=$(pw-cli list-objects | grep "alsa_output" | awk -F '"' '{print $2}' | dmenu -l 15)
-pactl set-default-sink $dmenu_input
