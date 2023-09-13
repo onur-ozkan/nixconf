@@ -1,5 +1,0 @@
-#!/bin/sh
-
-doas sv down chronyd
-doas ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-doas hwclock -s

@@ -1,4 +1,0 @@
-#!/bin/sh
-
-doas ln -sf /usr/share/zoneinfo/Europe/Istanbul /etc/localtime
-doas sv up chronyd
