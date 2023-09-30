@@ -45,12 +45,12 @@ call plug#end()
 	vnoremap  <leader>y  "+y
 
 	" Auto-closing
-	inoremap ( ()<Left>
-	inoremap [ []<Left>
-	inoremap { {}<Left>
-	inoremap " ""<Left>
-	inoremap ' ''<Left>
-	inoremap ` ``<Left>
+	" inoremap ( ()<Left>
+	" inoremap [ []<Left>
+	" inoremap { {}<Left>
+	" inoremap " ""<Left>
+	" inoremap ' ''<Left>
+	" inoremap ` ``<Left>
 
 	" Window sizing
 	noremap <silent> <S-Left> :vertical resize +3<CR>
