@@ -27,7 +27,7 @@ Screenshots
 --------------------
 ![2022-11-26_10-18](https://user-images.githubusercontent.com/39852038/204077157-3cd10cb0-acbf-4e30-bac5-7de64d68d5e0.png)
 
+<br/>
+<br/>
 
-
-
-Related article: https://onurozkan.dev/posts/reasons-that-i-left-gnome-and-kde
+If interested, check out https://onurozkan.dev/read/reasons-that-i-left-gnome-and-kde.
