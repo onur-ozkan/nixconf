@@ -24,4 +24,4 @@ export TERMINAL=st
 export FZF_DEFAULT_COMMAND='rg --hidden -l "" -g "!.git"'
 
 # Enable drm for qutebrowser
-export QTWEBENGINE_CHROMIUM_FLAGS="--widevine-path=/usr/lib/chromium/libwidevinecdm.so --disable-gpu-vsync"
+export QTWEBENGINE_CHROMIUM_FLAGS=--widevine-path=/usr/lib/chromium/libwidevinecdm.so
