@@ -24,6 +24,9 @@ call plug#begin()
 
 	" Lualine
 	Plug 'onur-ozkan-backups/lualine.nvim'
+
+	" Lualine
+	Plug 'onur-ozkan-backups/neoconf.nvim'
 call plug#end()
 
 " Mappings {
@@ -166,6 +169,8 @@ call plug#end()
 		return s
 	endfunction
 " Functions }
+
+lua require("neoconf").setup({})
 
 lua require('./cfg_lualine')
 lua require('./cfg_nvimtree')
