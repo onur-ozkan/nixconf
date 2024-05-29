@@ -180,7 +180,8 @@ ins_left {
     symbols = {
         error = ' ',
         warn = ' ',
-        info = ' '
+        info = ' ',
+        hint = ' '
     },
     color_error = colors.red,
     color_warn = colors.yellow,

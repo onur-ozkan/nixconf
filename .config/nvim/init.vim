@@ -1,6 +1,6 @@
 call plug#begin()
 	" Nimda
-	Plug 'onur-ozkan-backups/nimda.vim'
+	Plug 'onur-ozkan-backups/atlas.vim'
 
 	" Telescope
 	Plug 'onur-ozkan-backups/plenary.nvim'
@@ -18,9 +18,6 @@ call plug#begin()
 	" Nvim Cmp
 	Plug 'onur-ozkan-backups/nvim-cmp'
 	Plug 'onur-ozkan-backups/cmp-nvim-lsp'
-
-	" Treesitter
-	Plug 'onur-ozkan-backups/nvim-treesitter', {'do': ':TSUpdate'}
 
 	" Lualine
 	Plug 'onur-ozkan-backups/lualine.nvim'
@@ -79,7 +76,7 @@ call plug#end()
 
 " Settings {
 	set termguicolors
-	colorscheme nimda
+	colorscheme atlas
 
 	set showtabline=2
 	set tabline=%!DisplayTabId()
@@ -170,4 +167,3 @@ call plug#end()
 lua require('./cfg_lualine')
 lua require('./cfg_nvimtree')
 lua require('./cfg_lsp')
-lua require('./cfg_treesitter')

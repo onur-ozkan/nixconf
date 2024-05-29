@@ -85,9 +85,6 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = false -- turn off snippets
 
 cmp.setup({
-    completion = {
-        autocomplete = true
-    },
     mapping = {
         ['<Tab>'] = function(fallback)
             if cmp.visible() then
