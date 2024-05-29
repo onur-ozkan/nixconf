@@ -75,7 +75,6 @@ call plug#end()
 " vim-ulluminate }
 
 " Settings {
-	set termguicolors
 	colorscheme atlas
 
 	set showtabline=2
@@ -89,7 +88,6 @@ call plug#end()
 	silent verbose setlocal omnifunc
 
 	filetype indent plugin on
-	if !exists('g:syntax_on') | syntax enable | endif
 	set encoding=utf-8
 	scriptencoding utf-8
 
