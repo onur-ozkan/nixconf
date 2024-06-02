@@ -1,6 +1,6 @@
 call plug#begin()
 	" Nimda
-	Plug 'onur-ozkan-backups/atlas.vim'
+	Plug 'onur-ozkan/dark-energy.vim'
 
 	" Telescope
 	Plug 'onur-ozkan-backups/plenary.nvim'
@@ -75,15 +75,12 @@ call plug#end()
 " vim-ulluminate }
 
 " Settings {
-	colorscheme atlas
+	colorscheme dark-energy
 
 	set showtabline=2
 	set tabline=%!DisplayTabId()
 
 	set shortmess-=S
-
-	hi! Normal ctermbg=NONE guibg=NONE
-	hi! NonText ctermbg=NONE guibg=NONE
 
 	silent verbose setlocal omnifunc
 
@@ -108,8 +105,6 @@ call plug#end()
 	set splitbelow
 	set splitright
 
-	set hlsearch
-	set incsearch
 	set laststatus=2
 	set noruler
 	set noshowmode
