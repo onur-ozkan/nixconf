@@ -1,7 +1,6 @@
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
-alias vim="nvim"
 alias sudo="doas"
 
 # bash scripts
@@ -19,7 +18,7 @@ export GOPATH="$HOME/go"
 
 # defaults
 export TERM=screen-256color
-export EDITOR=nvim
+export EDITOR=vim
 export TERMINAL=st
 export FZF_DEFAULT_COMMAND='rg --hidden -l "" -g "!.git"'
 
