@@ -1,0 +1,9 @@
+#!/bin/sh
+
+src_path="$1"
+dst_path="$2"
+
+while inotifywait -r $src_path/*; do
+    rsync -zav --filter=':- .gitignore' $src_path $dst_path
+done
+
