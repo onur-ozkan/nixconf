@@ -163,46 +163,46 @@ vim.cmd [[
 -- Autocomplete
 
 -- c/cpp
-lspconfig.ccls.setup {
+vim.lsp.config('ccls', {
 	autostart = false,
 	cmd = { 'ccls' },
-    on_attach = on_attach,
+	on_attach = on_attach,
 	capabilities = capabilities,
-    init_options = {
-        cache = {
-            directory = ".cache"
-        }
-    },
+	init_options = {
+		cache = {
+			directory = ".cache"
+		}
+	},
 	clang = {
 		excludeArgs = { "-frounding-math"},
 		extraArgs = { "--gcc-toolchain=/usr"}
-    },
+	},
 	default_config = {
-      root_dir = [[root_pattern("compile_commands.json", ".ccls", ".git")]]
-    }
-}
+	  root_dir = [[root_pattern("compile_commands.json", ".ccls", ".git")]]
+	}
+})
 -- c/cpp
 
 -- rust
-lspconfig.rust_analyzer.setup {
+vim.lsp.config('rust_analyzer', {
 	autostart = false,
-    on_attach = on_attach,
+	on_attach = on_attach,
 	capabilities = capabilities
-}
+})
 -- rust
 
 -- golang
-lspconfig.gopls.setup {
+vim.lsp.config('gopls', {
 	autostart = false,
-    on_attach = on_attach,
+	on_attach = on_attach,
 	capabilities = capabilities
-}
+})
 -- golang
 
 -- python
-lspconfig.pyright.setup {
+vim.lsp.config('pyright', {
 	autostart = false,
-    on_attach = on_attach,
+	on_attach = on_attach,
 	capabilities = capabilities
-}
+})
 -- python
