@@ -1,9 +1,92 @@
 #!/bin/sh
 
-src_path="$1"
-dst_path="$2"
+src_path=""
+dst_path=""
+port=""
+skip_git=0
+filter_gitignore=0
 
-while inotifywait -r $src_path/*; do
-    rsync -zav --filter=':- .gitignore' $src_path $dst_path
+print_help() {
+    cat <<EOF
+Usage:
+  auto-rsync --from <source_path> --to <destination_path> [--port <ssh_port>]
+
+Options:
+  --from <path>                Local source directory to watch and sync from.
+  --to <user@host:path>        Destination path, local or remote (via SSH).
+  --port <number> (Optional)   SSH port number to use for rsync if destination is remote.
+
+  --filter-gitignore           Enable .gitignore filtering (disabled by default).
+  --skip-git                   Skip .git directory (disabled by default).
+  --help                       Show this help message and exit.
+
+Examples:
+  - auto-rsync --from ./localdir --to user@remote:/some/path
+  - auto-rsync --from ./localdir --to user@remote:/some/path --port 2222
+
+Notes:
+  - This script uses inotifywait to monitor file changes in the source path.
+  - Respects .gitignore during sync (meaning, anything in .gitignore won't be copied).
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --filter-gitignore)
+			filter_gitignore=1
+            shift
+            ;;
+        --from)
+            src_path="$2"
+            shift 2
+            ;;
+        --to)
+            dst_path="$2"
+            shift 2
+            ;;
+        --port)
+            port="$2"
+            shift 2
+            ;;
+        --skip-git)
+            skip_git=1
+            shift
+            ;;
+		--help)
+            print_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $1"
+			echo "Use --help to see usage."
+            exit 1
+            ;;
+    esac
+done
+
+if [ -z "$src_path" ] || [ -z "$dst_path" ]; then
+    echo "Both `--from` and `--to` must be specified."
+	echo "Use --help to see usage."
+    exit 1
+fi
+
+if [ -n "$port" ]; then
+    ssh_cmd="ssh -p $port"
+else
+    ssh_cmd="ssh"
+fi
+
+while inotifywait -r "$src_path"/*; do
+    rsync_opts="-zav -e \"$ssh_cmd\""
+
+    if [ "$skip_git" -eq 1 ]; then
+        rsync_opts="$rsync_opts --exclude='.git/'"
+    fi
+
+    if [ "$filter_gitignore" -eq 1 ]; then
+        rsync_opts="$rsync_opts --filter=':- .gitignore'"
+    fi
+
+    eval rsync $rsync_opts "\"$src_path\"" "\"$dst_path\""
 done
 
