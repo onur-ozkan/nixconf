@@ -79,12 +79,15 @@ fi
 while inotifywait -r "$src_path"/*; do
     rsync_opts="-zav -e \"$ssh_cmd\""
 
-    if [ "$skip_git" -eq 1 ]; then
-        rsync_opts="$rsync_opts --exclude='.git/'"
+    if [ "$filter_gitignore" -eq 1 ]; then
+		if [ "$skip_git" -eq 0 ]; then
+            rsync_opts="$rsync_opts --include='.git/***'"
+        fi
+        rsync_opts="$rsync_opts --filter=':- .gitignore'"
     fi
 
-    if [ "$filter_gitignore" -eq 1 ]; then
-        rsync_opts="$rsync_opts --filter=':- .gitignore'"
+    if [ "$skip_git" -eq 1 ]; then
+        rsync_opts="$rsync_opts --exclude='.git/'"
     fi
 
     eval rsync $rsync_opts "\"$src_path\"" "\"$dst_path\""
