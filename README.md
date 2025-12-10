@@ -1,4 +1,4 @@
-Personal, reproducible configuration for a no-GUI NixOS system using these dotfiles.
+NixOS bootstrapper that sets up my personal desktop environment.
 
 ## Layout
 
@@ -14,8 +14,8 @@ Personal, reproducible configuration for a no-GUI NixOS system using these dotfi
 1. Boot a NixOS installer ISO and mount your target root (e.g. at `/mnt`).
 2. Clone the repo into `/mnt/etc/nixos` (or another workspace) and enter it:
    ```console
-   git clone https://github.com/onur-ozkan/dotfiles
-   cd dotfiles
+   git clone https://github.com/onur-ozkan/nixconf
+   cd nixconf
    ```
 3. Generate a hardware profile for the machine and overwrite the placeholder:
    ```console

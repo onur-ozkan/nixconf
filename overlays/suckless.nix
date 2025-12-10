@@ -1,114 +1,76 @@
-inputs:
+{ inputs }:
 final: prev:
 
-let
-  inherit (prev) lib;
-
-  mkSucklessPackage = {
-    pname,
-    srcName,
-    buildInputs ? [ ],
-    extraNativeBuildInputs ? [ ],
-    description ? "Personal build of ${pname}",
-  }:
-    prev.stdenv.mkDerivation rec {
-      inherit pname buildInputs;
-      version = inputs.${srcName}.rev or "git";
-      src = inputs.${srcName};
-
-      nativeBuildInputs = [ prev.pkg-config ] ++ extraNativeBuildInputs;
-      strictDeps = true;
-
-      buildPhase = ''
-        runHook preBuild
-        make PREFIX=$out
-        runHook postBuild
-      '';
-
-      installPhase = ''
-        runHook preInstall
-        mkdir -p $out
-        make PREFIX=$out install
-        runHook postInstall
-      '';
-
-      meta = with lib; {
-        inherit description;
-        homepage = "https://github.com/onur-ozkan/${srcName}";
-        license = licenses.mit;
-        platforms = platforms.linux;
-      };
-    };
-
-  xCommon = with prev.xorg; [
-    libX11
-    libXft
-    libXinerama
-    libXrandr
-  ];
-in {
-  dwm-enhanced = mkSucklessPackage {
+{
+  dwm-enhanced = prev.dwm.overrideAttrs (_: rec {
     pname = "dwm-enhanced";
-    srcName = "dwm-enhanced";
-    buildInputs = xCommon ++ [ prev.xorg.libXi ];
-    description = "Personal dwm build with custom patches";
-  };
+    version = inputs.dwm-enhanced.rev or "git";
+    src = inputs.dwm-enhanced;
+  });
 
-  st-enhanced = mkSucklessPackage {
+  st-enhanced = prev.st.overrideAttrs (old: rec {
     pname = "st-enhanced";
-    srcName = "st-enhanced";
-    buildInputs = (with prev.xorg; [ libX11 libXft ]) ++ [ prev.harfbuzz ];
-    description = "Personal st (simple terminal) build with custom patches";
-  };
+    version = inputs.st-enhanced.rev or "git";
+    src = inputs.st-enhanced;
+    buildInputs = (old.buildInputs or [ ]) ++ [ prev.harfbuzz ];
+  });
 
-  dmenu-enhanced = mkSucklessPackage {
+  dmenu-enhanced = prev.dmenu.overrideAttrs (_: rec {
     pname = "dmenu-enhanced";
-    srcName = "dmenu-enhanced";
-    buildInputs = with prev.xorg; [
-      libX11
-      libXft
-      libXinerama
-    ];
-    description = "Custom dmenu fork with personal tweaks";
-  };
+    version = inputs.dmenu-enhanced.rev or "git";
+    src = inputs.dmenu-enhanced;
+  });
 
-  dwmblocks-enhanced = mkSucklessPackage {
+  dwmblocks-enhanced = prev.dwmblocks.overrideAttrs (_: rec {
     pname = "dwmblocks-enhanced";
-    srcName = "dwmblocks-enhanced";
-    buildInputs = with prev.xorg; [ libX11 ];
-    description = "Personal dwmblocks build";
-  };
+    version = inputs.dwmblocks-enhanced.rev or "git";
+    src = inputs.dwmblocks-enhanced;
+  });
 
-  slock-enhanced = mkSucklessPackage {
+  slock-enhanced = prev.slock.overrideAttrs (old: rec {
     pname = "slock-enhanced";
-    srcName = "slock-enhanced";
-    buildInputs = with prev.xorg; [
-      libX11
-      libXext
-      libXrandr
-    ] ++ [ prev.pam ];
-    description = "Personal slock fork";
-  };
+    version = inputs.slock-enhanced.rev or "git";
+    src = inputs.slock-enhanced;
+    buildInputs = (old.buildInputs or [ ]) ++ [ prev.xorg.libXrandr ];
+  });
 
-  sbs = mkSucklessPackage {
+  sbs = prev.stdenv.mkDerivation rec {
     pname = "sbs";
-    srcName = "sbs";
-    buildInputs = (with prev; [
-      harfbuzz
-      imlib2
-      libconfig
-      libdrm
-      libev
-      pcre
-      pixman
-    ]) ++ (with prev.xorg; [
-      libX11
-      libXrandr
-      libXrender
-      xcbutilimage
-      xcbutilrenderutil
-    ]);
-    extraNativeBuildInputs = [ prev.meson prev.ninja ];
-    description = "Status bar utilities";
+    version = inputs.sbs.rev or "git";
+    src = inputs.sbs;
+
+    nativeBuildInputs = with prev; [ meson ninja pkg-config ];
+    buildInputs =
+      (with prev; [
+        harfbuzz
+        imlib2
+        libconfig
+        libdrm
+        libev
+        pcre
+        pixman
+      ])
+      ++ (with prev.xorg; [
+        libX11
+        libXrandr
+        libXrender
+        xcbutilimage
+        xcbutilrenderutil
+      ]);
+
+    strictDeps = true;
+
+    buildPhase = ''
+      runHook preBuild
+      meson setup builddir --prefix=$out
+      ninja -C builddir
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      ninja -C builddir install
+      runHook postInstall
+    '';
   };
 }
