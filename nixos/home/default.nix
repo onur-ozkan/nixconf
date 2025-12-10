@@ -13,8 +13,6 @@ in {
     TERMINAL = "st";
   };
 
-  programs.nix-ld.enable = true;
-
   programs.home-manager.enable = true;
 
   programs.zsh = {

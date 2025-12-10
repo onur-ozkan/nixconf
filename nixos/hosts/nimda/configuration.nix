@@ -16,6 +16,8 @@
     (import ../../overlays/suckless.nix { inherit inputs; })
   ];
 
+  programs.nix-ld.enable = true;
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
