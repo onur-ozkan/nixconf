@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.nimda.profile;
-  nvidia5090DriverPackage = config.boot.kernelPackages.nvidiaPackages.latest;
+  nvidia5090DriverPackage = config.boot.kernelPackages.nvidiaPackages.production;
 
   basePackages = with pkgs; [
     acpi
@@ -104,7 +104,7 @@ in {
 
     hardware.nvidia = mkIf cfg.nvidia_5090_driver {
       modesetting.enable = true;
-      nvidiaSettings = true;
+      open = true;
       package = nvidia5090DriverPackage;
       powerManagement.enable = false;
     };
