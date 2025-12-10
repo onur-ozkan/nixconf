@@ -42,6 +42,7 @@ let
     xorg.xrandr
     xorg.xrdb
     xorg.xset
+    xorg.xinit
     zip
     zsh
   ];
