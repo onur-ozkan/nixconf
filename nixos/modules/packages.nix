@@ -12,6 +12,7 @@ let
     bc
     brave
     chrony
+    claws-mail
     cmake
     curl
     dmenu-enhanced
