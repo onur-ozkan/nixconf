@@ -8,7 +8,7 @@ let
 
   basePackages = with pkgs; [
     acpi
-	anytype
+    anytype
     bat
     bc
     brave
@@ -39,11 +39,13 @@ let
     rustup
     sbs
     screenfetch
+    signal-desktop
     slock-enhanced
     st-enhanced
     unzip
     usbutils
     valgrind
+    vscode
     wget
     xclip
     xdg-utils
