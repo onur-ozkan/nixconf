@@ -1,8 +1,0 @@
-#!/bin/bash
-
-db=$HOME/.local/share/qutebrowser/history.sqlite
-dmenu_input=$(sqlite3 "$db" "SELECT title, url, atime FROM History GROUP BY url ORDER BY atime desc" | tac | awk -F '|' '{print $1 " -> (" $2 ")"}' | dmenu -l 15)
-
-input=$(echo $dmenu_input | awk -F '-> ' '{print $2}' | sed 's/()/None/g;s/[()]//g')
-
-xdg-open "${input}" 2> /dev/null
