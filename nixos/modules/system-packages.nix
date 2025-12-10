@@ -26,7 +26,7 @@ let
     qemu_kvm
     ripgrep
     rsync
-    setxkbmap
+    xorg.setxkbmap
     tmux
     unzip
     usbutils
@@ -56,7 +56,7 @@ let
   laptopPackages = with pkgs; [
     brightnessctl
     powertop
-    xinput
+    xorg.xinput
   ];
 in {
   options.nimda.profile = {
