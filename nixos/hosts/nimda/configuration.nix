@@ -45,19 +45,21 @@
     };
   };
 
-  services.tlp.enable = true;
-
   networking.firewall = {
     enable = true;
     allowPing = false;
   };
 
+  services.tlp.enable = false;
+
   nimda.profile = {
     bluetooth = true;
-    laptop = true;
+    laptop = false;
   };
 
-  environment.etc."tlp.conf".source = ../../../etc/tlp.conf;
+  environment.etc."tlp.conf" = mkIf config.services.tlp.enable {
+    source = ../../../etc/tlp.conf;
+  };
   environment.etc."X11/xorg.conf.d/40-libinput.conf".source = ../../../libinput/40-libinput.conf;
 
   services.xserver.enable = false;
