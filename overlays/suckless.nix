@@ -52,43 +52,9 @@ in {
     extraBuildInputs = [ prev.xorg.libXrandr ];
   };
 
-  sbs = prev.stdenv.mkDerivation rec {
+  sbs = prev.sbs.overrideAttrs (old: {
     pname = "sbs";
     version = inputs.sbs.rev or "git";
     src = inputs.sbs;
-
-    nativeBuildInputs = with prev; [ meson ninja pkg-config ];
-    buildInputs =
-      (with prev; [
-        harfbuzz
-        imlib2
-        libconfig
-        libdrm
-        libev
-        pcre
-        pixman
-      ])
-      ++ (with prev.xorg; [
-        libX11
-        libXrandr
-        libXrender
-        xcbutilimage
-        xcbutilrenderutil
-      ]);
-
-    strictDeps = true;
-
-    buildPhase = ''
-      runHook preBuild
-      meson setup builddir --prefix=$out
-      ninja -C builddir
-      runHook postBuild
-    '';
-
-    installPhase = ''
-      runHook preInstall
-      ninja -C builddir install
-      runHook postInstall
-    '';
-  };
+  });
 }
