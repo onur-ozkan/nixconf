@@ -4,7 +4,7 @@ NixOS bootstrapper that sets up my personal desktop environment.
 
 - `flake.nix`: entry point that exposes the `nimda` host, pulls in personal suckless forks, and integrates Home Manager.
 - `nixos/hosts/nimda`: host-specific system configuration plus hardware stub (replace with your own).
-- `nixos/modules/system-packages.nix`: shared module that replaces the old Ansible roles (packages, audio, bluetooth, laptop toggles).
+- `nixos/modules/packages.nix`: shared module that replaces the old Ansible roles (packages, audio, bluetooth, laptop toggles).
 - `overlays/suckless.nix`: overlay that builds `dwm`, `st`, `dmenu`, `dwmblocks`, `slock`, and `sbs` from the GitHub forks.
 - `home/default.nix`: Home Manager module that ships all dotfiles in this repository.
 - `etc` / `libinput`: configuration files that are linked into `/etc` on the target system.

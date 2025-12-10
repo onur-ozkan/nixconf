@@ -3,7 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system-packages.nix
+    ../../modules/packages.nix
   ];
 
   nix.settings = {

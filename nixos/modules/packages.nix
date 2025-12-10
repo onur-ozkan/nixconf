@@ -7,46 +7,43 @@ let
 
   basePackages = with pkgs; [
     acpi
+    bat
     bc
     chrony
     cmake
     curl
+    dmenu-enhanced
+    docker
+    dwm-enhanced
+    dwmblocks-enhanced
     fd
     flameshot
     gcc
     git
+    gnumake
     gnupg
     htop
     inotify-tools
-    gnumake
-    neovim
     networkmanager
     pciutils
-    podman
     qemu_kvm
     ripgrep
     rsync
-    xorg.setxkbmap
-    tmux
+    sbs
+    slock-enhanced
+    st-enhanced
     unzip
     usbutils
     valgrind
     wget
     xclip
     xdg-utils
+    xorg.setxkbmap
     xorg.xrandr
     xorg.xrdb
     xorg.xset
     zip
     zsh
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    dwm-enhanced
-    st-enhanced
-    dmenu-enhanced
-    dwmblocks-enhanced
-    slock-enhanced
-    sbs
   ];
 
   bluetoothPackages = with pkgs; [

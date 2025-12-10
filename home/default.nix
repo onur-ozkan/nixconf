@@ -13,18 +13,6 @@
     TERMINAL = "st";
   };
 
-  home.packages = with pkgs; [
-    bat
-    curl
-    fd
-    git
-    ripgrep
-    tmux
-    unzip
-    neovim
-    wget
-  ];
-
   programs.zsh = {
     enable = true;
     enableAutosuggestions = true;
