@@ -15,4 +15,4 @@ index baf9420..7afaa3e 100644
  	{"dwm_clock", 3, 0},
  	{"dwm_keyboard_layout", 0, 12},
 - 	{"dwm_uptime", 60, 0},
-+	{"dwm_uptime", 10, 0},
++	// {"dwm_uptime", 10, 0},
