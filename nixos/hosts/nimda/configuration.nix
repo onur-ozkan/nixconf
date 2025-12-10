@@ -55,6 +55,7 @@
   nimda.profile = {
     bluetooth = true;
     laptop = false;
+    nvidia_5090_driver = false;
   };
 
   environment.etc."tlp.conf" = lib.mkIf config.services.tlp.enable {

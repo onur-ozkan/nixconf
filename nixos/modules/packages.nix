@@ -4,6 +4,7 @@ with lib;
 
 let
   cfg = config.nimda.profile;
+  nvidia5090DriverPackage = config.boot.kernelPackages.nvidiaPackages.latest;
 
   basePackages = with pkgs; [
     acpi
@@ -33,6 +34,7 @@ let
     ripgrep
     rsync
     sbs
+    screenfetch
     slock-enhanced
     st-enhanced
     unzip
@@ -64,13 +66,15 @@ in {
   options.nimda.profile = {
     bluetooth = mkEnableOption "Bluetooth support packages and services";
     laptop = mkEnableOption "Laptop specific tooling";
+    nvidia_5090_driver = mkEnableOption "NVIDIA 5090 desktop GPU driver";
   };
 
   config = {
     environment.systemPackages =
       basePackages
       ++ optionals cfg.bluetooth bluetoothPackages
-      ++ optionals cfg.laptop laptopPackages;
+      ++ optionals cfg.laptop laptopPackages
+      ++ optionals cfg.nvidia_5090_driver [ nvidia5090DriverPackage ];
 
     hardware.pulseaudio.enable = false;
     security.rtkit.enable = true;
@@ -89,5 +93,20 @@ in {
 
     services.blueman.enable = cfg.bluetooth;
     services.thermald.enable = cfg.laptop;
+
+    services.xserver = mkIf cfg.nvidia_5090_driver {
+      videoDrivers = [ "nvidia" ];
+    };
+
+    hardware.opengl = mkIf cfg.nvidia_5090_driver {
+      enable = true;
+    };
+
+    hardware.nvidia = mkIf cfg.nvidia_5090_driver {
+      modesetting.enable = true;
+      nvidiaSettings = true;
+      package = nvidia5090DriverPackage;
+      powerManagement.enable = false;
+    };
   };
 }
