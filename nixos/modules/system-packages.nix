@@ -18,7 +18,7 @@ let
     gnupg
     htop
     inotify-tools
-    make
+    gnumake
     neovim
     networkmanager
     pciutils
