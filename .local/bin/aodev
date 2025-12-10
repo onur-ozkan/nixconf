@@ -1,4 +1,4 @@
 #!/bin/sh
 
 dmenu_input=$(pw-cli list-objects | awk -F '"' '/_output/ && /node.name/{print $2}' | dmenu -l 15)
-pactl set-default-sink $dmenu_input
+wpctl set-default "$dmenu_input"
