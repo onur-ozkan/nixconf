@@ -77,7 +77,11 @@ in {
   slock-enhanced = mkSucklessPackage {
     pname = "slock-enhanced";
     srcName = "slock-enhanced";
-    buildInputs = [ prev.pam prev.xorg.libX11 ];
+    buildInputs = with prev.xorg; [
+      libX11
+      libXext
+      libXrandr
+    ] ++ [ prev.pam ];
     description = "Personal slock fork";
   };
 

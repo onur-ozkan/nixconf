@@ -79,7 +79,7 @@ in {
       wireplumber.enable = true;
     };
 
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
 
     hardware.bluetooth = mkIf cfg.bluetooth {
       enable = true;
