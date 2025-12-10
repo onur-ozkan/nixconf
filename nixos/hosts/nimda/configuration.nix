@@ -60,8 +60,6 @@
   environment.etc."tlp.conf" = lib.mkIf config.services.tlp.enable {
     source = ../../../etc/tlp.conf;
   };
-  environment.etc."X11/xorg.conf.d/40-libinput.conf".source = ../../../libinput/40-libinput.conf;
-
   services.xserver = {
     enable = true;
     displayManager.startx.enable = true;
