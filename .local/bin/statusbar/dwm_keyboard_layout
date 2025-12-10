@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 k_layout_icon=
 k_layout=$(setxkbmap -query | grep layout | awk '{print $NF}')

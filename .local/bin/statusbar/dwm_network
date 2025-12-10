@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 if [[ $(tail -n+3 /proc/net/wireless 2>/dev/null) ]]; then
         ssid=$(nmcli -t -f name connection show --active | head -n 1)

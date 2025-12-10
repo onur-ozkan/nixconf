@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 icon=""
 temp=$(echo "scale=0; $(sort -nr /sys/class/thermal/thermal_zone*/temp | head -n1) / 1000" | bc)

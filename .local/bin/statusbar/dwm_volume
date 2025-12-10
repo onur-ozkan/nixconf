@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 vol=$(pactl list sinks | perl -000ne 'if(/#1/){/(Volume:.*)/; print "$1\n"}' | tr ' ' '\n' | grep -m1 '%' | tr -d '%')
 if [ -z "$vol" ]; then

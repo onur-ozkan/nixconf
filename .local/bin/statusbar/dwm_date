@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 icon=""
 printf "$icon ^c#f7ca88^$(date '+%a, %B %d')^d^"

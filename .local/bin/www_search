@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 search_engine='https://duckduckgo.com/?q='
 dmenu_input=$(echo '' | dmenu -p "Search:")
