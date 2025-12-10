@@ -33,8 +33,6 @@
     shell = pkgs.zsh;
   };
 
-  programs.zsh.enable = true;
-
   security.sudo.enable = true;
 
   services.openssh = {

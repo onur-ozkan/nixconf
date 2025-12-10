@@ -7,14 +7,15 @@ in {
   home.username = "nimda";
   home.homeDirectory = "/home/nimda";
   home.stateVersion = "25.11";
-
-  programs.home-manager.enable = true;
-
   home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
   home.sessionVariables = {
     EDITOR = "nvim";
     TERMINAL = "st";
   };
+
+  programs.nix-ld.enable = true;
+
+  programs.home-manager.enable = true;
 
   programs.zsh = {
     enable = true;
@@ -36,6 +37,7 @@ in {
     enable = true;
     extraConfig = builtins.readFile ../../.tmux.conf;
   };
+
   programs.ssh = {
     enable = true;
     matchBlocks."git.orkavian.com" = {
