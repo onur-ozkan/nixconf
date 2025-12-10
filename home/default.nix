@@ -30,6 +30,8 @@
     enableAutosuggestions = true;
     enableCompletion = true;
     syntaxHighlighting.enable = true;
+    envExtra = builtins.readFile ../.zshenv;
+    initExtra = builtins.readFile ../.zshrc;
   };
 
   programs.neovim = {
@@ -39,8 +41,10 @@
     viAlias = true;
   };
 
-  programs.tmux.enable = true;
-  programs.git.enable = true;
+  programs.tmux = {
+    enable = true;
+    extraConfig = builtins.readFile ../.tmux.conf;
+  };
   programs.ssh = {
     enable = true;
     matchBlocks."git.orkavian.com" = {
@@ -51,11 +55,8 @@
 
   home.file.".xdg-override/.keep".text = "";
 
-  home.file.".zshenv".source = ../.zshenv;
-  home.file.".zshrc".source = ../.zshrc;
   home.file.".Xresources".source = ../.Xresources;
   home.file.".xinitrc".source = ../.xinitrc;
-  home.file.".tmux.conf".source = ../.tmux.conf;
   home.file.".gitconfig".source = ../.gitconfig;
   home.file.".dircolors".source = ../.dircolors;
 
