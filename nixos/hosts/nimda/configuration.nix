@@ -29,7 +29,7 @@
   users.users.nimda = {
     isNormalUser = true;
     description = "Onur Özkan";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
     shell = pkgs.zsh;
   };
 

@@ -105,6 +105,7 @@ in {
 
     services.blueman.enable = cfg.bluetooth;
     services.thermald.enable = cfg.laptop;
+    virtualisation.docker.enable = true;
 
     services.xserver = mkIf cfg.nvidia_5090_driver {
       videoDrivers = [ "nvidia" ];
