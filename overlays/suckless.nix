@@ -21,12 +21,13 @@ let
 
       buildPhase = ''
         runHook preBuild
-        make
+        make PREFIX=$out
         runHook postBuild
       '';
 
       installPhase = ''
         runHook preInstall
+        mkdir -p $out
         make PREFIX=$out install
         runHook postInstall
       '';
@@ -63,7 +64,11 @@ in {
   dmenu-enhanced = mkSucklessPackage {
     pname = "dmenu-enhanced";
     srcName = "dmenu-enhanced";
-    buildInputs = (with prev.xorg; [ libX11 libXft libXinerama ]);
+    buildInputs = with prev.xorg; [
+      libX11
+      libXft
+      libXinerama
+    ];
     description = "Custom dmenu fork with personal tweaks";
   };
 
