@@ -23,5 +23,5 @@ index baf9420..1a68cac 100644
 +	{"dwm_battery", 10, 0},
 +	{"dwm_clock", 5, 0},
  	{"dwm_keyboard_layout", 0, 12},
- 	{"dwm_uptime", 60, 0},
++	// {"dwm_uptime", 60, 0},
  };
