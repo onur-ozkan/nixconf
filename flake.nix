@@ -6,27 +6,27 @@
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     dwm-enhanced = {
-      url = "github:onur-ozkan/dwm-enhanced";
+      url = "github:onur-ozkan/dwm-enhanced?rev=4f6ed425d4d703582e6bf2a4ba4fc2bdef1200d8";
       flake = false;
     };
     st-enhanced = {
-      url = "github:onur-ozkan/st-enhanced";
+      url = "github:onur-ozkan/st-enhanced?rev=87d3220955b5c21ffc9bee4d63f3362a5a6adb3f";
       flake = false;
     };
     dmenu-enhanced = {
-      url = "github:onur-ozkan/dmenu-enhanced";
+      url = "github:onur-ozkan/dmenu-enhanced?rev=8af4894f35bc874ae84e3c523b7e87c2f1bfce6c";
       flake = false;
     };
     dwmblocks-enhanced = {
-      url = "github:onur-ozkan/dwmblocks-enhanced";
+      url = "github:onur-ozkan/dwmblocks-enhanced?rev=04d53927255638ca2ea075ac41dc04c1c0d75305";
       flake = false;
     };
     slock-enhanced = {
-      url = "github:onur-ozkan/slock-enhanced";
+      url = "github:onur-ozkan/slock-enhanced?rev=a340fb8f74c15c8d4f3586b5341c915485c615a4";
       flake = false;
     };
     sbs = {
-      url = "github:onur-ozkan/sbs";
+      url = "github:onur-ozkan/sbs?rev=2cf5b9838a2da25522f61d7b29448fda81dc0167";
       flake = false;
     };
   };
