@@ -1,38 +1,56 @@
 { inputs }:
 final: prev:
 
-{
-  dwm-enhanced = prev.dwm.overrideAttrs (_: rec {
+let
+  mkSucklessOverride =
+    {
+      basePackage,
+      pname,
+      srcName,
+      extraBuildInputs ? [ ],
+      extraNativeBuildInputs ? [ ],
+    }:
+    basePackage.overrideAttrs (old: {
+      inherit pname;
+      version = inputs.${srcName}.rev or "git";
+      src = inputs.${srcName};
+      buildInputs = (old.buildInputs or [ ]) ++ extraBuildInputs;
+      nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ extraNativeBuildInputs;
+      makeFlags = (old.makeFlags or [ ]) ++ [ "PREFIX=$(out)" ];
+      installFlags = (old.installFlags or [ ]) ++ [ "PREFIX=$(out)" ];
+    });
+in {
+  dwm-enhanced = mkSucklessOverride {
+    basePackage = prev.dwm;
     pname = "dwm-enhanced";
-    version = inputs.dwm-enhanced.rev or "git";
-    src = inputs.dwm-enhanced;
-  });
+    srcName = "dwm-enhanced";
+  };
 
-  st-enhanced = prev.st.overrideAttrs (old: rec {
+  st-enhanced = mkSucklessOverride {
+    basePackage = prev.st;
     pname = "st-enhanced";
-    version = inputs.st-enhanced.rev or "git";
-    src = inputs.st-enhanced;
-    buildInputs = (old.buildInputs or [ ]) ++ [ prev.harfbuzz ];
-  });
+    srcName = "st-enhanced";
+    extraBuildInputs = [ prev.harfbuzz ];
+  };
 
-  dmenu-enhanced = prev.dmenu.overrideAttrs (_: rec {
+  dmenu-enhanced = mkSucklessOverride {
+    basePackage = prev.dmenu;
     pname = "dmenu-enhanced";
-    version = inputs.dmenu-enhanced.rev or "git";
-    src = inputs.dmenu-enhanced;
-  });
+    srcName = "dmenu-enhanced";
+  };
 
-  dwmblocks-enhanced = prev.dwmblocks.overrideAttrs (_: rec {
+  dwmblocks-enhanced = mkSucklessOverride {
+    basePackage = prev.dwmblocks;
     pname = "dwmblocks-enhanced";
-    version = inputs.dwmblocks-enhanced.rev or "git";
-    src = inputs.dwmblocks-enhanced;
-  });
+    srcName = "dwmblocks-enhanced";
+  };
 
-  slock-enhanced = prev.slock.overrideAttrs (old: rec {
+  slock-enhanced = mkSucklessOverride {
+    basePackage = prev.slock;
     pname = "slock-enhanced";
-    version = inputs.slock-enhanced.rev or "git";
-    src = inputs.slock-enhanced;
-    buildInputs = (old.buildInputs or [ ]) ++ [ prev.xorg.libXrandr ];
-  });
+    srcName = "slock-enhanced";
+    extraBuildInputs = [ prev.xorg.libXrandr ];
+  };
 
   sbs = prev.stdenv.mkDerivation rec {
     pname = "sbs";
