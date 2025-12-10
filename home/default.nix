@@ -65,6 +65,11 @@
     recursive = true;
   };
 
+  home.file.".local/share/fonts" = {
+    source = ../fonts;
+    recursive = true;
+  };
+
   home.file.".local/bin" = {
     source = ../.local/bin;
     recursive = true;
@@ -79,4 +84,6 @@
     source = ../.backgrounds;
     recursive = true;
   };
+
+  fonts.fontconfig.enable = true;
 }
