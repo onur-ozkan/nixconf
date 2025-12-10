@@ -1,8 +1,8 @@
 diff --git a/config.h b/config.h
-index baf9420..1a68cac 100644
+index baf9420..331f9d0 100644
 --- a/config.h
 +++ b/config.h
-@@ -2,17 +2,17 @@
+@@ -2,19 +2,19 @@
  
  static const Block blocks[] = {
  	/* Command *//* Update Interval *//* Update Signal */
@@ -23,6 +23,8 @@ index baf9420..1a68cac 100644
 +	{"dwm_battery", 10, 0},
 +	{"dwm_clock", 5, 0},
  	{"dwm_keyboard_layout", 0, 12},
-- 	{"dwm_uptime", 60, 0},
-+	// {"dwm_uptime", 10, 0},
+-	{"dwm_uptime", 60, 0},
++	// {"dwm_uptime", 60, 0},
  };
+ 
+ //sets delimeter between status commands. NULL character ('\0') means no delimeter.
