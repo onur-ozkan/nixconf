@@ -41,8 +41,6 @@
     };
   };
 
-  home.file.".xdg-override/.keep".text = "";
-
   home.file.".Xresources".source = ../.Xresources;
   home.file.".xinitrc".source = ../.xinitrc;
   home.file.".gitconfig".source = ../.gitconfig;
