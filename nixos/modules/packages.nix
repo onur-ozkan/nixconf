@@ -17,7 +17,6 @@ let
     dmenu-enhanced
     docker
     dwm-enhanced
-    dwmblocks-enhanced
     fd
     flameshot
     gcc
@@ -64,6 +63,16 @@ let
     powertop
     xorg.xinput
   ];
+
+  dwmblocksPatch =
+    if cfg.laptop then
+      ../patches/dwmblock-enhanced/laptop.patch
+    else
+      ../patches/dwmblock-enhanced/desktop.patch;
+
+  dwmblocksEnhanced = pkgs.dwmblocks-enhanced.overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [ dwmblocksPatch ];
+  });
 in {
   options.nimda.profile = {
     bluetooth = mkEnableOption "Bluetooth support packages and services";
@@ -74,6 +83,7 @@ in {
   config = {
     environment.systemPackages =
       basePackages
+      ++ [ dwmblocksEnhanced ]
       ++ optionals cfg.bluetooth bluetoothPackages
       ++ optionals cfg.laptop laptopPackages
       ++ optionals cfg.nvidia_5090_driver [ nvidia5090DriverPackage ];
