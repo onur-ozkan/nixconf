@@ -62,7 +62,10 @@
   };
   environment.etc."X11/xorg.conf.d/40-libinput.conf".source = ../../../libinput/40-libinput.conf;
 
-  services.xserver.enable = false;
+  services.xserver = {
+    enable = true;
+    displayManager.startx.enable = true;
+  };
 
   system.stateVersion = "25.11";
 }
