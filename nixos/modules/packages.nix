@@ -72,7 +72,6 @@ in {
       ++ optionals cfg.bluetooth bluetoothPackages
       ++ optionals cfg.laptop laptopPackages;
 
-    sound.enable = true;
     hardware.pulseaudio.enable = false;
     security.rtkit.enable = true;
 
