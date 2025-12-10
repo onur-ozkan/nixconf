@@ -57,7 +57,7 @@
     laptop = false;
   };
 
-  environment.etc."tlp.conf" = mkIf config.services.tlp.enable {
+  environment.etc."tlp.conf" = lib.mkIf config.services.tlp.enable {
     source = ../../../etc/tlp.conf;
   };
   environment.etc."X11/xorg.conf.d/40-libinput.conf".source = ../../../libinput/40-libinput.conf;
