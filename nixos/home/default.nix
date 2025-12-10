@@ -17,11 +17,11 @@ in {
 
   programs.zsh = {
     enable = true;
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     enableCompletion = true;
     syntaxHighlighting.enable = true;
     envExtra = builtins.readFile ../../.zshenv;
-    initExtra = builtins.readFile ../../.zshrc;
+    initContent = builtins.readFile ../../.zshrc;
   };
 
   programs.neovim = {

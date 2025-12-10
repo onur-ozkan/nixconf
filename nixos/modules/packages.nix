@@ -90,7 +90,7 @@ in {
       ++ optionals cfg.laptop laptopPackages
       ++ optionals cfg.nvidia_5090_driver [ nvidia5090DriverPackage ];
 
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
 
     services.pipewire = {
@@ -113,7 +113,7 @@ in {
       videoDrivers = [ "nvidia" ];
     };
 
-    hardware.opengl = mkIf cfg.nvidia_5090_driver {
+    hardware.graphics = mkIf cfg.nvidia_5090_driver {
       enable = true;
     };
 
