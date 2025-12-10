@@ -6,7 +6,7 @@
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     dwm-enhanced = {
-      url = "github:onur-ozkan/dwm-enhanced?rev=4f6ed425d4d703582e6bf2a4ba4fc2bdef1200d8";
+      url = "github:onur-ozkan/dwm-enhanced?rev=b51dbdca37e02a9aa23eb352c54ee77820d497b9";
       flake = false;
     };
     st-enhanced = {

@@ -1,23 +1,22 @@
 #!/usr/bin/env bash
 
-vol=$(pactl list sinks | perl -000ne 'if(/#1/){/(Volume:.*)/; print "$1\n"}' | tr ' ' '\n' | grep -m1 '%' | tr -d '%')
-if [ -z "$vol" ]; then
-	vol=$(pactl list sinks | tr ' ' '\n' | grep -m1 '%' | tr -d '%')
+# Read the current sink volume via PipeWire's wpctl CLI
+if ! volume_output=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null); then
+	volume_output=""
 fi
 
-vol_status=$(pactl list sinks | grep 'Mute: yes')
+vol=$(awk '/Volume:/ { print $2; exit }' <<< "$volume_output")
+vol=${vol:-0}
+vol=$(LC_ALL=C awk -v value="$vol" 'BEGIN { printf "%d", (value * 100) + 0.5 }')
 
-if [ -n "$vol_status" ]
-then
-        vol_icon=" "
-elif [ ${vol::-1} -eq 0 ]
-then
-        vol_icon=" "
-elif [ ${vol::-1} -lt 50 ]
-then
-        vol_icon=" "
+if grep -qiE 'Mute:\s*(1|yes|true)|\[MUTED\]' <<< "$volume_output"; then
+	vol_icon=" "
+elif [ "$vol" -eq 0 ]; then
+	vol_icon=" "
+elif [ "$vol" -lt 50 ]; then
+	vol_icon=" "
 else
-        vol_icon=" "
+	vol_icon=" "
 fi
 
-printf "$vol_icon^c#f7ca88^$vol%%^d^"
+printf "%s^c#f7ca88^%s%%^d^" "$vol_icon" "$vol"
