@@ -8,6 +8,7 @@ let
 
   basePackages = with pkgs; [
     acpi
+	anytype
     bat
     bc
     brave
