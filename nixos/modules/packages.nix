@@ -33,6 +33,7 @@ let
     qemu_kvm
     ripgrep
     rsync
+    rustup
     sbs
     screenfetch
     slock-enhanced
