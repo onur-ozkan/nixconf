@@ -26,6 +26,8 @@ let
     htop
     inotify-tools
     networkmanager
+    pamixer
+    pavucontrol
     pciutils
     qemu_kvm
     ripgrep
@@ -50,6 +52,7 @@ let
 
   bluetoothPackages = with pkgs; [
     bluez
+    bluez-tools
   ];
 
   laptopPackages = with pkgs; [
@@ -69,16 +72,16 @@ in {
       ++ optionals cfg.bluetooth bluetoothPackages
       ++ optionals cfg.laptop laptopPackages;
 
+    sound.enable = true;
+    hardware.pulseaudio.enable = false;
+    security.rtkit.enable = true;
+
     services.pipewire = {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      jack.enable = true;
-      wireplumber.enable = true;
     };
-
-    services.pulseaudio.enable = false;
 
     hardware.bluetooth = mkIf cfg.bluetooth {
       enable = true;
