@@ -9,6 +9,7 @@ let
     acpi
     bat
     bc
+    brave
     chrony
     cmake
     curl
@@ -39,10 +40,10 @@ let
     xclip
     xdg-utils
     xorg.setxkbmap
+    xorg.xinit
     xorg.xrandr
     xorg.xrdb
     xorg.xset
-    xorg.xinit
     zip
     zsh
   ];
