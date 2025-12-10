@@ -7,13 +7,6 @@ PATH="$HOME/.local/bin:$PATH"
 # dwmblock scripts
 PATH="$HOME/.local/bin/statusbar:$PATH"
 
-# rust
-PATH="$HOME/.cargo/bin:$PATH"
-
-# golang
-export PATH="$PATH:$HOME/go/bin/"
-export GOPATH="$HOME/go"
-
 # defaults
 export TERM=screen-256color
 export EDITOR=vim
