@@ -47,7 +47,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.nimda = import ./home;
+            home-manager.users.nimda = import ./nixos/home;
           }
         ];
       };

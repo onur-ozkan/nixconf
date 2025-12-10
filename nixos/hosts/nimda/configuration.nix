@@ -13,7 +13,7 @@
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
-    (import ../../../overlays/suckless.nix { inherit inputs; })
+    (import ../../overlays/suckless.nix { inherit inputs; })
   ];
 
   boot.loader.systemd-boot.enable = true;

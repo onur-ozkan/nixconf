@@ -18,8 +18,8 @@
     enableAutosuggestions = true;
     enableCompletion = true;
     syntaxHighlighting.enable = true;
-    envExtra = builtins.readFile ../.zshenv;
-    initExtra = builtins.readFile ../.zshrc;
+    envExtra = builtins.readFile ../../.zshenv;
+    initExtra = builtins.readFile ../../.zshrc;
   };
 
   programs.neovim = {
@@ -31,7 +31,7 @@
 
   programs.tmux = {
     enable = true;
-    extraConfig = builtins.readFile ../.tmux.conf;
+    extraConfig = builtins.readFile ../../.tmux.conf;
   };
   programs.ssh = {
     enable = true;
@@ -41,33 +41,33 @@
     };
   };
 
-  home.file.".Xresources".source = ../.Xresources;
-  home.file.".xinitrc".source = ../.xinitrc;
-  home.file.".gitconfig".source = ../.gitconfig;
-  home.file.".dircolors".source = ../.dircolors;
+  home.file.".Xresources".source = ../../.Xresources;
+  home.file.".xinitrc".source = ../../.xinitrc;
+  home.file.".gitconfig".source = ../../.gitconfig;
+  home.file.".dircolors".source = ../../.dircolors;
 
   home.file.".dwm" = {
-    source = ../.dwm;
+    source = ../../.dwm;
     recursive = true;
   };
 
   home.file.".local/share/fonts" = {
-    source = ../fonts;
+    source = ../../fonts;
     recursive = true;
   };
 
   home.file.".local/bin" = {
-    source = ../.local/bin;
+    source = ../../.local/bin;
     recursive = true;
   };
 
   home.file.".config/nvim" = {
-    source = ../.config/nvim;
+    source = ../../.config/nvim;
     recursive = true;
   };
 
   home.file.".backgrounds" = {
-    source = ../.backgrounds;
+    source = ../../.backgrounds;
     recursive = true;
   };
 
