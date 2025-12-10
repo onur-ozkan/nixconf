@@ -24,6 +24,7 @@ let
     git
     gnumake
     gnupg
+    go
     htop
     inotify-tools
     networkmanager
