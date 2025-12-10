@@ -26,6 +26,7 @@ let
     go
     htop
     inotify-tools
+    keepassxc
     networkmanager
     pamixer
     pavucontrol
