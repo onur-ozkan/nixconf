@@ -1,5 +1,19 @@
-NixOS bootstrapper that sets up my personal desktop environment.
+NixOS bootstrapper that sets up my development environment on top of
+[dwm-enhanced](https://github.com/onur-ozkan/dwm-enhanced).
 
 ## Bootstrap a machine
 
-TODO
+1. Replace the placeholder `nixos/hosts/nimda/hardware-configuration.nix` with
+the actual `hardware-configuration.nix` of the system. 
+
+2. Adjust host/user details in `nixos/hosts/nimda/configuration.nix` and `nixos/home/default.nix`.
+
+3. (optional) Review the patches in `nixos/patches` and modify or remove any you don't
+need (if you remove any, you may need to update dwmblocksPatch in `nixos/modules/packages.nix`).
+
+4. Run:
+
+```
+   sudo nixos-rebuild switch --flake .#nimda
+```
+
