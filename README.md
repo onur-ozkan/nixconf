@@ -1,7 +1,7 @@
 NixOS bootstrapper that sets up my development environment on top of
 [dwm-enhanced](https://github.com/onur-ozkan/dwm-enhanced).
 
-<img width="1921" height="1201" alt="2025-12-11_15-56" src="https://github.com/user-attachments/assets/afa3ff9e-8174-47cb-8f15-cd8282ce905a" />
+<img width="1921" height="1201" alt="_2025-12-11_16-06" src="https://github.com/user-attachments/assets/2540f455-89b7-4cac-9217-d575ac642b8e" />
 
 ## Bootstrap
 
