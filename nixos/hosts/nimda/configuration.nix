@@ -1,5 +1,7 @@
 { config, pkgs, lib, inputs, ... }:
 
+with lib;
+
 {
   imports = [
     ./hardware-configuration.nix
@@ -56,9 +58,15 @@
     laptop = false;
     nvidia_5090_driver = false;
   };
+
   services.xserver = {
     enable = true;
     displayManager.startx.enable = true;
+  };
+
+  services.libinput = mkIf config.nimda.profile.laptop {
+    enable = true;
+    touchpad.naturalScrolling = true;
   };
 
   system.stateVersion = "25.11";
