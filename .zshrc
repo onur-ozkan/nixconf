@@ -19,4 +19,5 @@ zstyle ':vcs_info:git:*' formats '%F{#87af5f} %b%f'
 setopt PROMPT_SUBST
 
 ZSH_THEME_GIT_PROMPT_AHEAD="%{$fg_no_bold[cyan]%}->"
-PROMPT='%F{#87af5f} %f %F{#f7ca88}%~%f ${vcs_info_msg_0_} $ '
+PROMPT='%F{#8197BF} %f %F{#f7ca88}%~%f ${vcs_info_msg_0_} $ '
+
