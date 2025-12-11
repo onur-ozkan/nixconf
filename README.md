@@ -16,5 +16,6 @@ need (if you remove any, you may need to update dwmblocksPatch in `nixos/modules
 4. Run:
 
 ```
-   sudo nixos-rebuild switch --flake .#nimda
+   # The default hostname is "nimda".
+   sudo nixos-rebuild switch --flake .#${hostname}
 ```
