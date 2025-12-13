@@ -34,7 +34,7 @@ with lib;
   users.users.nimda = {
     isNormalUser = true;
     description = "Onur Özkan";
-    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    extraGroups = ["wheel" "networkmanager" "docker" "dialout"];
     shell = pkgs.zsh;
   };
 
