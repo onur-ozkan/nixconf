@@ -32,12 +32,14 @@ call plug#end()
 	nnoremap <silent> <space>` :Telescope find_files <CR>
 	" Display git status
 	nnoremap <BS> :Telescope git_status <CR>
+	" Lists git commits with diff preview, checkout action <cr>, reset mixed <C-r>m, reset soft <C-r>s and reset hard <C-r>h
+	nnoremap <C-g> :Telescope git_commits <CR>
+	" Show git info for the current line
+	nnoremap <C-l> :GitLineInfo <CR>
 	" Grep for string that is under the cursor
 	nnoremap <C-n> :Telescope grep_string <CR>
 	" Grep in whole workspace
 	nnoremap <C-f> :Telescope live_grep <CR>
-	" Lists git commits with diff preview, checkout action <cr>, reset mixed <C-r>m, reset soft <C-r>s and reset hard <C-r>h
-	nnoremap <C-g> :Telescope git_commits <CR>
 	" Copy to clipboard
 	vnoremap  <leader>y  "+y
 
@@ -155,6 +157,29 @@ call plug#end()
 		endif
 		return s
 	endfunction
+	" Get the commit hash and open it on a new tab.
+	function! GitLineInfo() abort
+		let l:file = expand('%:p')
+		if empty(l:file) || !filereadable(l:file) | echo "No file to blame" | return | endif
+
+		let l:git = ['git', '-C', fnamemodify(l:file, ':h')]
+		if system(l:git + ['rev-parse', '--is-inside-work-tree']) !~# 'true' | echo "Not inside a git repository" | return | endif
+
+		let l:line = line('.')
+		let l:commit = get(split(get(systemlist(l:git + ['blame', '--porcelain', '-L', printf('%d,%d', l:line, l:line), '--', l:file]), 0, '')), 0, '')
+		if empty(l:commit) | echo "Git blame failed" | return | endif
+		if l:commit =~# '^0\+$' | echo "Line not committed yet" | return | endif
+
+		let l:details = systemlist(l:git + ['show', l:commit])
+		if v:shell_error || empty(l:details) | echo "Git show failed" | return | endif
+
+		tabnew | setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+		call setline(1, l:details)
+		setlocal syntax=diff
+		execute 'file [Git ' . l:commit . ']'
+		setlocal nomodifiable
+	endfunction
+	command! GitLineInfo call GitLineInfo()
 " Functions }
 
 lua require('./cfg_lualine')
