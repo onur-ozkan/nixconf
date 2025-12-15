@@ -65,6 +65,7 @@ let
 
   laptopPackages = with pkgs; [
     brightnessctl
+    power-profiles-daemon
     powertop
     xorg.xinput
   ];
@@ -109,6 +110,7 @@ in {
     };
 
     services.blueman.enable = cfg.bluetooth;
+    services.power-profiles-daemon.enable = cfg.laptop;
     services.thermald.enable = cfg.laptop;
     virtualisation.docker.enable = true;
 
