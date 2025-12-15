@@ -176,7 +176,7 @@ call plug#end()
 		tabnew | setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
 		call setline(1, l:details)
 		setlocal syntax=diff
-		execute 'file [Git ' . l:commit . ']'
+		execute 'file ['. strpart(l:commit, 0, 8) .']'
 		setlocal nomodifiable
 	endfunction
 	command! GitLineInfo call GitLineInfo()
