@@ -1,0 +1,3 @@
+#!/bin/sh
+
+nix-shell -p ncurses.dev pkg-config bison flex rust-bindgen libclang
