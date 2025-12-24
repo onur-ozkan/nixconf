@@ -55,5 +55,9 @@
       devShells.x86_64-linux.lkdev = import ./nixos/shells/lkdev.nix {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
       };
+
+      devShells.x86_64-linux.orkavian = import ./nixos/shells/orkavian.nix {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      };
     };
   }
