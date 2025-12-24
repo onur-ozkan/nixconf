@@ -19,3 +19,20 @@ need (if you remove any, you may need to update dwmblocksPatch in `nixos/modules
    # The default hostname is "nimda".
    sudo nixos-rebuild switch --flake .#${hostname}
 ```
+
+## Development Shells
+
+To access development environment shells (like `lkdev`) from anywhere
+on your system add this flake to your local registry.
+
+1. Register nixconf:
+
+```
+   nix registry add nixconf $path_to_nixconf
+```
+
+2. Launch a shell (run from any directory):
+
+```
+   nix develop nixconf#$shell_name
+```
