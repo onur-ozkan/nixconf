@@ -33,7 +33,7 @@ let
     pamixer
     pavucontrol
     pciutils
-    qemu_kvm
+    pkg-config
     ripgrep
     rsync
     rustup

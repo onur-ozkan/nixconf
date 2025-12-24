@@ -51,5 +51,9 @@
           }
         ];
       };
+
+      devShells.x86_64-linux.lkdev = import ./nixos/shells/lkdev.nix {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      };
     };
   }
