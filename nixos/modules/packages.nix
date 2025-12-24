@@ -29,7 +29,6 @@ let
     htop
     inotify-tools
     keepassxc
-    llvmPackages_latest.libclang
     networkmanager
     pamixer
     pavucontrol
@@ -37,7 +36,6 @@ let
     qemu_kvm
     ripgrep
     rsync
-    rust-bindgen
     rustup
     sbs
     screenfetch
