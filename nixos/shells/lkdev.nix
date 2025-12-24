@@ -11,7 +11,6 @@ pkgs.mkShell {
     llvmPackages.lld
     llvmPackages.llvm
     openssl.dev
-    pkg-config
     python3
     qemu
   ];
