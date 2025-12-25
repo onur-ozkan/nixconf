@@ -20,6 +20,7 @@ with lib;
 
   programs.nix-ld.enable = true;
   programs.zsh.enable = true;
+  programs.slock.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
