@@ -13,6 +13,12 @@ with lib;
     auto-optimise-store = true;
   };
 
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
+
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (import ../../overlays/suckless.nix { inherit inputs; })
