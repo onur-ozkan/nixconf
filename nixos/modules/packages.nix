@@ -30,8 +30,6 @@ let
     inotify-tools
     keepassxc
     networkmanager
-    pamixer
-    pavucontrol
     pciutils
     pkg-config
     ripgrep
@@ -44,7 +42,6 @@ let
     st-enhanced
     unzip
     usbutils
-    valgrind
     vscode
     wget
     xclip
