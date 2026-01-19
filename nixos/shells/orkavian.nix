@@ -36,12 +36,8 @@ pkgs.mkShell {
     pkgs.libglvnd
   ];
 
-  RUST_LIB_SRC = pkgs.rustPlatform.rustLibSrc;
-
   shellHook = ''
     export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"
-    export RUST_SRC_PATH="$RUST_LIB_SRC"
-
     alias make='make HOSTCC=gcc'
   '';
 }
