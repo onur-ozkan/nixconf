@@ -13,6 +13,7 @@ pkgs.mkShell {
     xorg.libXcursor
     xorg.libxcb
     xorg.libXi
+    xorg.libXrandr
     libxkbcommon
     vulkan-loader
     mesa
@@ -31,6 +32,7 @@ pkgs.mkShell {
     pkgs.xorg.libXcursor
     pkgs.xorg.libxcb
     pkgs.xorg.libXi
+    pkgs.xorg.libXrandr
     pkgs.vulkan-loader
     pkgs.mesa
     pkgs.libglvnd

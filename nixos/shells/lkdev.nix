@@ -4,7 +4,7 @@ let
   inherit (pkgs) lib writers;
   inherit (pkgs.llvmPackages) clang;
 
-  # When --target is used, skip Nixpkgs' clang wrapper.
+  # When --target is used, skip clang wrapper.
   wrappedClang = writers.writeBashBin "clang" ''
     target_specified=
     for arg in "$@"; do
