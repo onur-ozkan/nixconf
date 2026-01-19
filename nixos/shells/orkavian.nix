@@ -23,7 +23,15 @@ pkgs.mkShell {
     llvmPackages.libclang
     llvmPackages.libcxx
     opencv
-    python3
+    zlib
+    stdenv.cc.cc.lib
+    glib
+
+    (python310.withPackages (ps: with ps; [
+      pip
+      setuptools
+      wheel
+    ]))
   ];
 
   LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
@@ -36,10 +44,12 @@ pkgs.mkShell {
     pkgs.vulkan-loader
     pkgs.mesa
     pkgs.libglvnd
+    pkgs.zlib
+    pkgs.stdenv.cc.cc.lib
+    pkgs.glib
   ];
 
   shellHook = ''
     export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"
-    alias make='make HOSTCC=gcc'
   '';
 }
