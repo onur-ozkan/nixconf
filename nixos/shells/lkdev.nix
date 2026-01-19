@@ -12,21 +12,15 @@ pkgs.mkShell {
     llvmPackages.llvm
     openssl.dev
     python3
+    rustup
     qemu
   ];
 
   nativeBuildInputs = with pkgs; [
-    rustc
-    cargo
     rust-bindgen
-    rustfmt
-    clippy
   ];
 
-  RUST_LIB_SRC = pkgs.rustPlatform.rustLibSrc;
-
   shellHook = ''
-    export RUST_SRC_PATH="$RUST_LIB_SRC"
     export BINDGEN_EXTRA_CLANG_ARGS="-Wno-unused-command-line-argument"
     alias make='make HOSTCC=gcc'
   '';
