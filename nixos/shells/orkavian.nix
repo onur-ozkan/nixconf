@@ -26,6 +26,7 @@ pkgs.mkShell {
     zlib
     stdenv.cc.cc.lib
     glib
+    qgroundcontrol
 
     (python310.withPackages (ps: with ps; [
       pip
