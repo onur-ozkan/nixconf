@@ -8,7 +8,6 @@ let
 
   basePackages = with pkgs; [
     acpi
-    alsa-utils
     anytype
     bat
     bc
@@ -32,7 +31,6 @@ let
     keepassxc
     networkmanager
     pciutils
-    pulseaudio
     pkg-config
     ripgrep
     rsync
@@ -101,18 +99,6 @@ in {
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-    };
-
-    systemd.user.services.audio-restart = {
-      description = "Restart audio services shortly after login";
-      after = [ "pipewire.service" "pipewire-pulse.service" "wireplumber.service" ];
-      wantedBy = [ "default.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
-        ExecStart =
-          "${pkgs.systemd}/bin/systemctl --user restart pipewire pipewire-pulse wireplumber";
-      };
     };
 
     hardware.bluetooth = mkIf cfg.bluetooth {
