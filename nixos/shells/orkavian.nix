@@ -1,5 +1,9 @@
 { pkgs ? import <nixpkgs> {} }:
 
+let
+  enableZsh = import ./enable-zsh.nix { inherit pkgs; };
+in
+
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
     clang
@@ -51,6 +55,7 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
+    export NIX_DEV_SHELL_NAME="orkavian"
     export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"
-  '';
+  '' + enableZsh;
 }

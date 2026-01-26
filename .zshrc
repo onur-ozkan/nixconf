@@ -19,5 +19,9 @@ zstyle ':vcs_info:git:*' formats '%F{#87af5f} %b%f'
 setopt PROMPT_SUBST
 
 ZSH_THEME_GIT_PROMPT_AHEAD="%{$fg_no_bold[cyan]%}->"
-PROMPT='%F{#8197BF} %f %F{#f7ca88}%~%f ${vcs_info_msg_0_} $ '
 
+if [ -n "$NIX_DEV_SHELL_NAME" ]; then
+  NIX_SHELL_PREFIX="[${NIX_DEV_SHELL_NAME}] "
+fi
+
+PROMPT='${NIX_SHELL_PREFIX}%F{#8197BF} %f %F{#f7ca88}%~%f ${vcs_info_msg_0_} $ '
