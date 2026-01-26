@@ -3,6 +3,7 @@
 let
   inherit (pkgs) lib writers;
   inherit (pkgs.llvmPackages) clang;
+  enableZsh = import ./enable-zsh.nix { inherit pkgs; };
 
   # When --target is used, skip clang wrapper.
   wrappedClang = writers.writeBashBin "clang" ''
@@ -44,6 +45,7 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
+    export NIX_DEV_SHELL_NAME="lkdev"
     export BINDGEN_EXTRA_CLANG_ARGS="-Wno-unused-command-line-argument"
-  '';
+  '' + enableZsh;
 }
