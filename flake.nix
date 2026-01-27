@@ -57,7 +57,10 @@
       };
 
       devShells.x86_64-linux.orkavian = import ./nixos/shells/orkavian.nix {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
       };
     };
   }
