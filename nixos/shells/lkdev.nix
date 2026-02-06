@@ -31,13 +31,14 @@ pkgs.mkShell {
     flex
     gcc
     glibc.dev
-    wrappedClang
     llvmPackages.lld
     llvmPackages.llvm
     openssl.dev
+    picocom
     python3
-    rustup
     qemu
+    rustup
+    wrappedClang
   ];
 
   nativeBuildInputs = with pkgs; [
