@@ -64,6 +64,8 @@ with lib;
   networking.firewall = {
     enable = true;
     allowPing = false;
+    allowedUDPPorts = [69];
+    allowedTCPPorts = [2049];
   };
 
   nimda.profile = {
@@ -81,6 +83,21 @@ with lib;
     enable = true;
     touchpad.naturalScrolling = true;
   };
+
+  services.tftpd = {
+    enable = false;
+    path = "/srv/tftp";
+  };
+
+  services.nfs.server = {
+    enable = false;
+  };
+
+  # NFSv4 pseudo-root export
+  services.nfs.server.exports = ''
+    /srv/nfs *(rw,sync,no_subtree_check,fsid=0,no_root_squash)
+    /srv/nfs/opi5 *(rw,sync,no_subtree_check,no_root_squash)
+  '';
 
   system.stateVersion = "25.11";
 }
