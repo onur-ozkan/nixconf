@@ -1,9 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  inherit (pkgs) lib writers;
-  inherit (pkgs.llvmPackages) clang;
+  aarch64Toolchain = pkgs.pkgsCross.aarch64-multiplatform.buildPackages;
   enableZsh = import ./enable-zsh.nix { inherit pkgs; };
+  inherit (pkgs.llvmPackages) clang;
+  inherit (pkgs) lib writers;
 
   # When --target is used, skip clang wrapper.
   wrappedClang = writers.writeBashBin "clang" ''
@@ -26,19 +27,26 @@ in
 
 pkgs.mkShell {
   packages = with pkgs; [
+    aarch64Toolchain.binutils
+    aarch64Toolchain.gcc
     bison
     elfutils
     flex
     gcc
     glibc.dev
+    gnutls.dev
     llvmPackages.lld
     llvmPackages.llvm
     openssl.dev
     picocom
-    python3
     qemu
     rustup
+    swig
     wrappedClang
+
+    (python3.withPackages (ps: with ps; [
+      setuptools
+    ]))
   ];
 
   nativeBuildInputs = with pkgs; [
