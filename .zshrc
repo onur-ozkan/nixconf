@@ -24,4 +24,15 @@ if [ -n "$NIX_DEV_SHELL_NAME" ]; then
   NIX_SHELL_PREFIX="[${NIX_DEV_SHELL_NAME}] "
 fi
 
+dsh() {
+  if [ "$#" -eq 0 ]; then
+    echo "Usage: dsh <shell_name> [nix-develop-args...]" >&2
+    return 1
+  fi
+
+  local shell_name="$1"
+  shift
+  nix develop "nixconf#${shell_name}" "$@"
+}
+
 PROMPT='${NIX_SHELL_PREFIX}%F{#8197BF} %f %F{#f7ca88}%~%f ${vcs_info_msg_0_} $ '
