@@ -34,5 +34,5 @@ nix registry add nixconf $path_to_nixconf
 2. Launch a shell (run from any directory):
 
 ```
-nix develop nixconf#$shell_name
+denv $shell_name
 ```
