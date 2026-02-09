@@ -9,15 +9,20 @@ let
   # When --target is used, skip clang wrapper.
   wrappedClang = writers.writeBashBin "clang" ''
     target_specified=
+    print_builtin_include=
     for arg in "$@"; do
       case "$arg" in
         "--target"*)
           target_specified=1
           ;;
+        # Kernel uses this to locate builtin headers like arm_neon.h.
+        "-print-file-name=include")
+          print_builtin_include=1
+          ;;
       esac
     done
 
-    if [[ -n $target_specified ]]; then
+    if [[ -n $target_specified || -n $print_builtin_include ]]; then
       exec ${lib.getExe clang.cc} "$@"
     else
       exec ${lib.getExe clang} "$@"
