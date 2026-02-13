@@ -10,6 +10,7 @@ pkgs.mkShell {
     cmake
     pkg-config
     rustup
+    wasm-pack
   ];
 
   buildInputs = with pkgs; [
