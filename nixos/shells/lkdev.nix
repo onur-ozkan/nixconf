@@ -34,6 +34,7 @@ pkgs.mkShell {
   packages = with pkgs; [
     aarch64Toolchain.binutils
     aarch64Toolchain.gcc
+    b4
     bison
     elfutils
     flex
