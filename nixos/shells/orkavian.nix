@@ -25,6 +25,7 @@ pkgs.mkShell {
     llvmPackages.libcxx
     mesa
     mpv
+    nodejs
     opencv
     qgroundcontrol
     stdenv.cc.cc.lib
