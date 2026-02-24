@@ -75,6 +75,11 @@ in {
     recursive = true;
   };
 
+  home.file.".config/remote-shell" = {
+    source = ../../.config/remote-shell;
+    recursive = true;
+  };
+
   home.file.".local/share/nvim/site/autoload/plug.vim".source = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim";
     sha256 = "sha256-4JmeVzBIZedfWxXuhjfcTOW6lZF1V/OPfLY9RUtTz7Q=";
