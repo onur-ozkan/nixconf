@@ -39,15 +39,6 @@ Options:
   --no-filter-gitignore      Do not apply .gitignore-based rsync filtering.
   --keep-git                 Sync .git directory too.
   --help                     Show this help message.
-
-Behavior:
-  1. Syncs current local directory to:
-     - <remote-path> if provided
-     - else <configured-remote-base>/<current-local-dir-name>
-     Relative remote-path values are resolved under configured remote base.
-     Using "." behaves like omitted path.
-  2. Opens SSH session inside the synced remote workspace.
-  3. Keeps syncing in background while session is open (unless --no-watch).
 EOF
 }
 
