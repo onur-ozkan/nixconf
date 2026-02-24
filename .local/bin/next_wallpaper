@@ -1,26 +1,27 @@
 #!/bin/sh
 
-cache_file=~/.cache/.sbs
+cache_file=~/.cache/sbs
 backgrounds_dir=~/.backgrounds
 
 if [ ! -e "$cache_file" ] ; then
     printf "NULL" > "$cache_file"
 fi
 
-current_bg=$(head -1 ~/.cache/.sbs)
+current_bg=$(head -1 ~/.cache/sbs)
 first_bg=$(ls -a -p ~/.backgrounds | grep -v / | head -1)
 
 if [ "$current_bg" == NULL ]
 then
-	sed -i "1s/^.*$/$first_bg/" $cache_file
+	selected_bg="$first_bg"
 else
-	next_bg=$(ls -a -p ~/.backgrounds | grep -v / | grep -A1 $current_bg | tail -n 1)
+	next_bg=$(ls -a -p ~/.backgrounds | grep -v / | grep -F -A1 -- "$current_bg" | tail -n 1)
 	if [ "$current_bg" == "$next_bg" ]
 	then
-		sed -i "1s/^.*$/$first_bg/" $cache_file
+		selected_bg="$first_bg"
 	else
-		sed -i "1s/^.*$/$next_bg/" $cache_file
+		selected_bg="$next_bg"
 	fi
 fi
 
-sbs ~/.backgrounds/$current_bg
+printf "%s\n" "$selected_bg" > "$cache_file"
+sbs "$backgrounds_dir/$selected_bg"
