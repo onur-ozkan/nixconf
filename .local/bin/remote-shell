@@ -1,0 +1,311 @@
+#!/bin/sh
+
+set -eu
+
+DEFAULT_CONFIG="${HOME}/.config/remote-shell/servers.conf"
+CONFIG_PATH="${REMOTE_SHELL_CONFIG:-${DEV_SHELL_CONFIG:-$DEFAULT_CONFIG}}"
+
+SERVER_NAME=""
+SERVER_HOST=""
+SERVER_REMOTE_BASE=""
+SERVER_PORT=""
+SERVER_REMOTE_SHELL=""
+SSH_SOCKET_DIR=""
+SSH_CONTROL_PATH=""
+
+WATCH=1
+SKIP_GIT=1
+FILTER_GITIGNORE=1
+RUN_CMD=""
+LIST_ONLY=0
+OVERRIDE_PORT=""
+REMOTE_PATH_INPUT=""
+
+print_help() {
+  cat <<EOF
+Usage:
+  remote-shell <server-name> [remote-path] [options]
+  remote-shell --list [--config <path>]
+
+Config format (~/.config/remote-shell/servers.conf):
+  name|user@host|/remote/workspaces/base|port|shell
+
+Options:
+  --config <path>            Use a custom servers config file.
+  --list                     List configured server names and exit.
+  --port <number>            Override server port from config.
+  --cmd <command>            Run one command remotely instead of interactive shell.
+  --no-watch                 Disable file watch loop after first sync.
+  --no-filter-gitignore      Do not apply .gitignore-based rsync filtering.
+  --keep-git                 Sync .git directory too.
+  --help                     Show this help message.
+
+Behavior:
+  1. Syncs current local directory to:
+     - <remote-path> if provided
+     - else <configured-remote-base>/<current-local-dir-name>
+     Relative remote-path values are resolved under configured remote base.
+     Using "." behaves like omitted path.
+  2. Opens SSH session inside the synced remote workspace.
+  3. Keeps syncing in background while session is open (unless --no-watch).
+EOF
+}
+
+escape_single_quotes() {
+  printf "%s" "$1" | sed "s/'/'\\\\''/g"
+}
+
+load_server() {
+  if [ ! -f "$CONFIG_PATH" ]; then
+    echo "Config not found: $CONFIG_PATH" >&2
+    exit 1
+  fi
+
+  while IFS='|' read -r name host remote_base port remote_shell; do
+    case "$name" in
+      "" | \#*) continue ;;
+    esac
+
+    if [ "$name" = "$SERVER_NAME" ]; then
+      SERVER_HOST="$host"
+      SERVER_REMOTE_BASE="$remote_base"
+      SERVER_PORT="${port:-}"
+      SERVER_REMOTE_SHELL="${remote_shell:-}"
+      return 0
+    fi
+  done < "$CONFIG_PATH"
+
+  return 1
+}
+
+list_servers() {
+  if [ ! -f "$CONFIG_PATH" ]; then
+    echo "Config not found: $CONFIG_PATH" >&2
+    exit 1
+  fi
+
+  awk -F'|' '
+    /^[[:space:]]*#/ || /^[[:space:]]*$/ { next }
+    { printf "%-16s -> %s\n", $1, $2 }
+  ' "$CONFIG_PATH"
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --config)
+      CONFIG_PATH="$2"
+      shift 2
+      ;;
+    --list)
+      LIST_ONLY=1
+      shift
+      ;;
+    --port)
+      OVERRIDE_PORT="$2"
+      shift 2
+      ;;
+    --cmd)
+      RUN_CMD="$2"
+      shift 2
+      ;;
+    --no-watch)
+      WATCH=0
+      shift
+      ;;
+    --no-filter-gitignore)
+      FILTER_GITIGNORE=0
+      shift
+      ;;
+    --keep-git)
+      SKIP_GIT=0
+      shift
+      ;;
+    --help)
+      print_help
+      exit 0
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      print_help >&2
+      exit 1
+      ;;
+    *)
+      if [ -z "$SERVER_NAME" ]; then
+        SERVER_NAME="$1"
+      elif [ -z "$REMOTE_PATH_INPUT" ]; then
+        REMOTE_PATH_INPUT="$1"
+      else
+        echo "Unexpected argument: $1" >&2
+        print_help >&2
+        exit 1
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [ "$LIST_ONLY" -eq 1 ]; then
+  list_servers
+  exit 0
+fi
+
+if [ -z "$SERVER_NAME" ]; then
+  print_help >&2
+  exit 1
+fi
+
+if ! command -v rsync >/dev/null 2>&1; then
+  echo "Missing dependency: rsync" >&2
+  exit 1
+fi
+
+if [ "$WATCH" -eq 1 ] && ! command -v inotifywait >/dev/null 2>&1; then
+  echo "inotifywait not found, continuing without watch mode." >&2
+  WATCH=0
+fi
+
+if ! load_server; then
+  echo "Server '$SERVER_NAME' is not configured in $CONFIG_PATH" >&2
+  echo "Configured servers:" >&2
+  list_servers >&2
+  exit 1
+fi
+
+if [ -n "$OVERRIDE_PORT" ]; then
+  SERVER_PORT="$OVERRIDE_PORT"
+fi
+
+if [ -z "$SERVER_HOST" ] || [ -z "$SERVER_REMOTE_BASE" ]; then
+  echo "Invalid config for server '$SERVER_NAME'. Required: name|user@host|remote_base|..." >&2
+  exit 1
+fi
+
+LOCAL_DIR="$(pwd)"
+if [ -z "$REMOTE_PATH_INPUT" ] || [ "$REMOTE_PATH_INPUT" = "." ] || [ "$REMOTE_PATH_INPUT" = "./" ]; then
+  REMOTE_PATH_INPUT="."
+fi
+
+WORKSPACE_NAME="$(basename "$LOCAL_DIR")"
+
+case "$REMOTE_PATH_INPUT" in
+  .|./)
+    REMOTE_DIR="${SERVER_REMOTE_BASE%/}/${WORKSPACE_NAME}"
+    ;;
+  /*)
+    REMOTE_DIR="$REMOTE_PATH_INPUT"
+    ;;
+  *)
+    REMOTE_DIR="${SERVER_REMOTE_BASE%/}/${REMOTE_PATH_INPUT}"
+    ;;
+esac
+
+run_ssh() {
+  remote_command="$1"
+  if [ -n "$SERVER_PORT" ]; then
+    ssh \
+      -o ControlMaster=auto \
+      -o ControlPath="$SSH_CONTROL_PATH" \
+      -o ControlPersist=600 \
+      -p "$SERVER_PORT" \
+      "$SERVER_HOST" \
+      "$remote_command"
+  else
+    ssh \
+      -o ControlMaster=auto \
+      -o ControlPath="$SSH_CONTROL_PATH" \
+      -o ControlPersist=600 \
+      "$SERVER_HOST" \
+      "$remote_command"
+  fi
+}
+
+run_ssh_tty() {
+  remote_command="$1"
+  if [ -n "$SERVER_PORT" ]; then
+    ssh \
+      -t \
+      -o ControlMaster=auto \
+      -o ControlPath="$SSH_CONTROL_PATH" \
+      -o ControlPersist=600 \
+      -p "$SERVER_PORT" \
+      "$SERVER_HOST" \
+      "$remote_command"
+  else
+    ssh \
+      -t \
+      -o ControlMaster=auto \
+      -o ControlPath="$SSH_CONTROL_PATH" \
+      -o ControlPersist=600 \
+      "$SERVER_HOST" \
+      "$remote_command"
+  fi
+}
+
+sync_once() {
+  set -- rsync -az --delete
+
+  if [ "$SKIP_GIT" -eq 1 ]; then
+    set -- "$@" --exclude=.git/
+  fi
+
+  if [ "$FILTER_GITIGNORE" -eq 1 ]; then
+    set -- "$@" "--filter=:- .gitignore"
+  fi
+
+  rsync_ssh_cmd="ssh -o ControlMaster=auto -o ControlPath=$SSH_CONTROL_PATH -o ControlPersist=600"
+  if [ -n "$SERVER_PORT" ]; then
+    rsync_ssh_cmd="$rsync_ssh_cmd -p $SERVER_PORT"
+  fi
+  set -- "$@" -e "$rsync_ssh_cmd"
+
+  set -- "$@" "${LOCAL_DIR%/}/" "${SERVER_HOST}:${REMOTE_DIR%/}/"
+  "$@"
+}
+
+SSH_SOCKET_DIR="$(mktemp -d "${TMPDIR:-/tmp}/remote-shell.XXXXXX")"
+SSH_CONTROL_PATH="${SSH_SOCKET_DIR}/cm-%r@%h:%p"
+
+remote_dir_escaped="$(escape_single_quotes "$REMOTE_DIR")"
+run_ssh "mkdir -p '$remote_dir_escaped'"
+
+echo "Syncing '$LOCAL_DIR' -> '$SERVER_HOST:$REMOTE_DIR'"
+sync_once
+
+watch_pid=""
+if [ "$WATCH" -eq 1 ]; then
+  (
+    while inotifywait -qq -r -e modify,create,delete,move --exclude '(^|/)\.git(/|$)' "$LOCAL_DIR"; do
+      sync_once || echo "Sync failed, waiting for next change..." >&2
+    done
+  ) &
+  watch_pid="$!"
+fi
+
+cleanup() {
+  if [ -n "$watch_pid" ]; then
+    kill "$watch_pid" 2>/dev/null || true
+  fi
+  if [ -n "$SSH_CONTROL_PATH" ]; then
+    if [ -n "$SERVER_PORT" ]; then
+      ssh -S "$SSH_CONTROL_PATH" -p "$SERVER_PORT" -O exit "$SERVER_HOST" >/dev/null 2>&1 || true
+    else
+      ssh -S "$SSH_CONTROL_PATH" -O exit "$SERVER_HOST" >/dev/null 2>&1 || true
+    fi
+  fi
+  if [ -n "$SSH_SOCKET_DIR" ]; then
+    rm -rf "$SSH_SOCKET_DIR"
+  fi
+}
+trap cleanup EXIT INT TERM
+
+if [ -n "$RUN_CMD" ]; then
+  run_cmd_escaped="$(escape_single_quotes "$RUN_CMD")"
+  remote_shell="${SERVER_REMOTE_SHELL:-\${SHELL:-/bin/sh}}"
+  run_ssh_tty "cd '$remote_dir_escaped' && exec $remote_shell -lc '$run_cmd_escaped'"
+else
+  if [ -n "$SERVER_REMOTE_SHELL" ]; then
+    run_ssh_tty "cd '$remote_dir_escaped' && exec $SERVER_REMOTE_SHELL -l"
+  else
+    run_ssh_tty "cd '$remote_dir_escaped' && exec \${SHELL:-/bin/sh} -l"
+  fi
+fi
