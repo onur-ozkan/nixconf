@@ -36,3 +36,14 @@ nix registry add nixconf $path_to_nixconf
 ```
 dsh $shell_name
 ```
+
+## Utility Scripts
+
+Scripts under `.local/bin` that I use for my own workflow:
+
+- `aodev`: Lets me choose a PipeWire output device from `dmenu` and sets it as default.
+- `cfreq`: Watches and prints live CPU MHz values from `/proc/cpuinfo`.
+- `next_wallpaper`: Rotates to the next wallpaper in `~/.backgrounds` and keeps track in `~/.cache/.sbs`.
+- `remote-shell`: Syncs the current local project to a configured remote host and opens an SSH shell there.
+- `www_search`: Opens a URL directly (if input looks like a domain) or searches DuckDuckGo via `dmenu` input.
+- `statusbar/*`: Various scripts used for `dwmblocks` status modules.
