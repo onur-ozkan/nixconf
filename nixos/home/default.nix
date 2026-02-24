@@ -42,6 +42,12 @@ in {
       hostname = "git.orkavian.com";
       port = 4022;
     };
+    matchBlocks."ssh.gitlab.freedesktop.org" = {
+      hostname = "ssh.gitlab.freedesktop.org";
+      user = "git";
+      identityFile = "${homeDir}/.ssh/gitlab_freedesktop_org";
+      identitiesOnly = true;
+    };
   };
 
   home.file.".Xresources".source = ../../.Xresources;
