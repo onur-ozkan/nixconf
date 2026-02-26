@@ -2,6 +2,10 @@
 
 let
   enableZsh = import ./enable-zsh.nix { inherit pkgs; };
+
+  opencvGui = pkgs.opencv.override {
+    enableGtk3 = true;
+  };
 in
 
 pkgs.mkShell {
@@ -19,6 +23,7 @@ pkgs.mkShell {
     ffmpeg_6
     fontconfig
     glib
+    gtk3
     libglvnd
     libxkbcommon
     llvmPackages.libclang
@@ -26,7 +31,7 @@ pkgs.mkShell {
     mesa
     mpv
     nodejs
-    opencv
+    opencvGui
     qgroundcontrol
     stdenv.cc.cc.lib
     vlc
@@ -49,6 +54,7 @@ pkgs.mkShell {
     pkgs.cudaPackages.cudatoolkit
     pkgs.cudaPackages.cudnn
     pkgs.glib
+    pkgs.gtk3
     pkgs.libglvnd
     pkgs.libxkbcommon
     pkgs.mesa
