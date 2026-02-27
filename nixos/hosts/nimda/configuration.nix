@@ -53,6 +53,10 @@ with lib;
 
   security.sudo.enable = true;
 
+  services.udev.extraRules = ''
+    SUBSYSTEM=="hidraw", KERNEL=="hidraw*", MODE="0660", GROUP="dialout", TAG+="uaccess"
+  '';
+
   services.openssh = {
     enable = true;
     settings = {
