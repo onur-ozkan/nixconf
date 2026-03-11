@@ -292,7 +292,7 @@ trap cleanup EXIT INT TERM
 
 if [ -n "$RUN_CMD" ]; then
   run_cmd_escaped="$(escape_single_quotes "$RUN_CMD")"
-  remote_shell="${SERVER_REMOTE_SHELL:-\${SHELL:-/bin/sh}}"
+  remote_shell=${SERVER_REMOTE_SHELL:-'${SHELL:-/bin/sh}'}
   run_ssh_tty "cd '$remote_dir_escaped' && exec $remote_shell -lc '$run_cmd_escaped'"
 else
   if [ -n "$SERVER_REMOTE_SHELL" ]; then
