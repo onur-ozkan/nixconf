@@ -52,7 +52,8 @@ load_server() {
     exit 1
   fi
 
-  while IFS='|' read -r name host remote_base port remote_shell; do
+  while IFS='|' read -r name host remote_base port remote_shell \
+    || [ -n "${name}${host}${remote_base}${port}${remote_shell}" ]; do
     case "$name" in
       "" | \#*) continue ;;
     esac
