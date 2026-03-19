@@ -33,6 +33,7 @@ pkgs.mkShell {
     nodejs
     opencvGui
     qgroundcontrol
+    socat
     stdenv.cc.cc.lib
     vlc
     vulkan-loader
