@@ -2,12 +2,14 @@
 
 let
   homeDir = config.home.homeDirectory;
-  nvimPkg = config.programs.neovim.finalPackage or pkgs.neovim;
 in {
   home.username = "nimda";
   home.homeDirectory = "/home/nimda";
   home.stateVersion = "25.11";
-  home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.local/bin"
+    "${config.home.homeDirectory}/.local/bin/statusbar"
+  ];
   home.sessionVariables = {
     EDITOR = "nvim";
     TERMINAL = "st";
@@ -29,6 +31,36 @@ in {
     defaultEditor = true;
     vimAlias = true;
     viAlias = true;
+    plugins = with pkgs.vimPlugins; [
+      plenary-nvim
+      telescope-nvim
+      nvim-tree-lua
+      nvim-lspconfig
+      nvim-cmp
+      cmp-nvim-lsp
+      lualine-nvim
+      (pkgs.vimUtils.buildVimPlugin {
+        pname = "dark-energy-vim";
+        version = "unstable";
+        src = pkgs.fetchFromGitHub {
+          owner = "onur-ozkan";
+          repo = "dark-energy.vim";
+          rev = "31afba7";
+          sha256 = "sha256-BtRpyRpLRJl/gMZCF51ltgifAqwxXWpQ+OXm2Yy6wZQ=";
+        };
+      })
+      (pkgs.vimUtils.buildVimPlugin {
+        pname = "vim-esearch";
+        version = "unstable";
+        src = pkgs.fetchFromGitHub {
+          owner = "onur-ozkan-backups";
+          repo = "vim-esearch";
+          rev = "d4703a6";
+          sha256 = "sha256-Aett3CSMbLYFaWIRYIRCQXG9xl0qUZQK1CUER4ggKkc=";
+        };
+        doCheck = false;
+      })
+    ];
   };
 
   programs.tmux = {
@@ -78,11 +110,6 @@ in {
   home.file.".config/remote-shell" = {
     source = ../../.config/remote-shell;
     recursive = true;
-  };
-
-  home.file.".local/share/nvim/site/autoload/plug.vim".source = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim";
-    sha256 = "sha256-4JmeVzBIZedfWxXuhjfcTOW6lZF1V/OPfLY9RUtTz7Q=";
   };
 
   home.file.".backgrounds" = {
