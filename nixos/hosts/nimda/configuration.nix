@@ -1,7 +1,5 @@
 { config, pkgs, lib, inputs, ... }:
 
-with lib;
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -51,8 +49,6 @@ with lib;
     shell = pkgs.zsh;
   };
 
-  security.sudo.enable = true;
-
   services.udev.extraRules = ''
     SUBSYSTEM=="hidraw", KERNEL=="hidraw*", MODE="0660", GROUP="dialout", TAG+="uaccess"
   '';
@@ -75,7 +71,7 @@ with lib;
   nimda.profile = {
     bluetooth = true;
     laptop = false;
-    nvidia_5090_driver = false;
+    nvidia_driver = false;
   };
 
   services.xserver = {
@@ -83,7 +79,7 @@ with lib;
     displayManager.startx.enable = true;
   };
 
-  services.libinput = mkIf config.nimda.profile.laptop {
+  services.libinput = lib.mkIf config.nimda.profile.laptop {
     enable = true;
     touchpad.naturalScrolling = true;
   };

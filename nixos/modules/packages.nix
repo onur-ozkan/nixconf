@@ -1,10 +1,7 @@
 { config, lib, pkgs, ... }:
 
-with lib;
-
 let
   cfg = config.nimda.profile;
-  nvidia5090DriverPackage = config.boot.kernelPackages.nvidiaPackages.production;
 
   basePackages = with pkgs; [
     acpi
@@ -12,7 +9,6 @@ let
     bat
     bc
     brave
-    chrony
     claws-mail
     cmake
     curl
@@ -29,7 +25,6 @@ let
     htop
     inotify-tools
     keepassxc
-    networkmanager
     pciutils
     pkg-config
     ripgrep
@@ -52,7 +47,6 @@ let
     xorg.xrdb
     xorg.xset
     zip
-    zsh
   ];
 
   bluetoothPackages = with pkgs; [
@@ -78,18 +72,18 @@ let
   });
 in {
   options.nimda.profile = {
-    bluetooth = mkEnableOption "Bluetooth support packages and services";
-    laptop = mkEnableOption "Laptop specific tooling";
-    nvidia_5090_driver = mkEnableOption "NVIDIA 5090 desktop GPU driver";
+    bluetooth = lib.mkEnableOption "Bluetooth support packages and services";
+    laptop = lib.mkEnableOption "Laptop specific tooling";
+    nvidia_driver = lib.mkEnableOption "NVIDIA desktop GPU driver";
   };
 
   config = {
     environment.systemPackages =
       basePackages
       ++ [ dwmblocksEnhanced ]
-      ++ optionals cfg.bluetooth bluetoothPackages
-      ++ optionals cfg.laptop laptopPackages
-      ++ optionals cfg.nvidia_5090_driver [ nvidia5090DriverPackage ];
+      ++ lib.optionals cfg.bluetooth bluetoothPackages
+      ++ lib.optionals cfg.laptop laptopPackages
+      ++ lib.optionals cfg.nvidia_driver [ config.boot.kernelPackages.nvidiaPackages.production ];
 
     services.pulseaudio.enable = false;
     security.rtkit.enable = true;
@@ -102,7 +96,7 @@ in {
       wireplumber.enable = true;
     };
 
-    hardware.bluetooth = mkIf cfg.bluetooth {
+    hardware.bluetooth = lib.mkIf cfg.bluetooth {
       enable = true;
       powerOnBoot = true;
     };
@@ -112,18 +106,18 @@ in {
     services.thermald.enable = cfg.laptop;
     virtualisation.docker.enable = true;
 
-    services.xserver = mkIf cfg.nvidia_5090_driver {
+    services.xserver = lib.mkIf cfg.nvidia_driver {
       videoDrivers = [ "nvidia" ];
     };
 
-    hardware.graphics = mkIf cfg.nvidia_5090_driver {
+    hardware.graphics = lib.mkIf cfg.nvidia_driver {
       enable = true;
     };
 
-    hardware.nvidia = mkIf cfg.nvidia_5090_driver {
+    hardware.nvidia = lib.mkIf cfg.nvidia_driver {
       modesetting.enable = true;
       open = true;
-      package = nvidia5090DriverPackage;
+      package = config.boot.kernelPackages.nvidiaPackages.production;
       powerManagement.enable = false;
     };
   };
