@@ -92,7 +92,7 @@ ins_left {
     color = {
         fg = colors.yellow
     }, -- Sets highlighting of component
-    padding = { left = 0 } -- We don't need space before this
+    padding = { left = 0, right = 1 }
 }
 
 ins_left {
@@ -125,7 +125,7 @@ ins_left {
         return ''
     end,
     color = "LualineMode",
-    padding = { left = 0 }
+    padding = { left = 0, right = 1 }
 }
 
 ins_left {
@@ -260,7 +260,7 @@ ins_right {
     color = {
         fg = colors.yellow
     },
-    padding = { right = 1 }
+    padding = { left = 1, right = 1 }
 }
 
 lualine.setup(config)
