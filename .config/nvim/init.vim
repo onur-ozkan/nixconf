@@ -1,28 +1,3 @@
-call plug#begin()
-	" Nimda
-	Plug 'onur-ozkan/dark-energy.vim'
-
-	" Telescope
-	Plug 'onur-ozkan-backups/plenary.nvim'
-	Plug 'onur-ozkan-backups/telescope.nvim'
-
-	" Nvim Tree
-	Plug 'onur-ozkan-backups/nvim-tree.lua'
-
-	" Vim Search
-	Plug 'onur-ozkan-backups/vim-esearch'
-
-	" Nvim LspConfig
-	Plug 'onur-ozkan-backups/nvim-lspconfig'
-
-	" Nvim Cmp
-	Plug 'onur-ozkan-backups/nvim-cmp'
-	Plug 'onur-ozkan-backups/cmp-nvim-lsp'
-
-	" Lualine
-	Plug 'onur-ozkan-backups/lualine.nvim'
-call plug#end()
-
 " Mappings {
 	" Back to previously opened window
 	nnoremap <S-h> <C-6> <CR>
@@ -105,7 +80,7 @@ call plug#end()
 	set nofixendofline
 	set nostartofline
 	set splitbelow
-	set splitright
+	set nosplitright
 
 	set laststatus=2
 	set noruler
@@ -131,7 +106,7 @@ call plug#end()
 	let g:esearch.root_markers = []
 " Settings }
 
-" Functions }
+" Functions {
 	function! DisplayTabId()
 		let s = ''
 		for i in range(tabpagenr('$'))

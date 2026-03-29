@@ -4,9 +4,7 @@ require'nvim-tree'.setup {
 	hijack_cursor = false,
 	hijack_netrw = true,
 	hijack_unnamed_buffer_when_opening = false,
-	open_on_tab = false,
 	sort_by = "name",
-	update_cwd = true,
 	view = {
 		width = 40,
 		side = "right",
@@ -21,7 +19,6 @@ require'nvim-tree'.setup {
 	},
 	update_focused_file = {
 		enable = true,
-		update_cwd = false,
 		ignore_list = {},
 	},
 	system_open = {
@@ -108,6 +105,4 @@ require'nvim-tree'.setup {
 		},
 	},
 }
-
-vim.opt.splitright = false
 

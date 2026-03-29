@@ -12,7 +12,8 @@ local colors = {
     violet = '#A9A1E1',
     magenta = '#C678DD',
     blue = '#51AFEF',
-    red = '#EC5F67'
+    red = '#EC5F67',
+    white = '#EEEEEE'
 }
 
 local conditions = {
@@ -91,7 +92,7 @@ ins_left {
     color = {
         fg = colors.yellow
     }, -- Sets highlighting of component
-    left_padding = 0 -- We don't need space before this
+    padding = { left = 0 } -- We don't need space before this
 }
 
 ins_left {
@@ -124,7 +125,7 @@ ins_left {
         return ''
     end,
     color = "LualineMode",
-    left_padding = 0
+    padding = { left = 0 }
 }
 
 ins_left {
@@ -197,7 +198,7 @@ end}
 ins_right {
     function()
         local msg = 'No Active Lsp'
-        local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+        local buf_ft = vim.bo[0].filetype
         local clients = vim.lsp.get_clients()
         if next(clients) == nil then
             return msg
@@ -259,7 +260,7 @@ ins_right {
     color = {
         fg = colors.yellow
     },
-    right_padding = 1
+    padding = { right = 1 }
 }
 
 lualine.setup(config)
