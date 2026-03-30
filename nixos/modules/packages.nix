@@ -5,9 +5,6 @@ let
 
   basePackages = with pkgs; [
     acpi
-    anytype
-    bat
-    bc
     brave
     claws-mail
     cmake
@@ -24,7 +21,6 @@ let
     go
     htop
     inotify-tools
-    keepassxc
     pciutils
     pkg-config
     ripgrep
