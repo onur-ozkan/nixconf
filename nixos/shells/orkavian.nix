@@ -3,6 +3,25 @@
 let
   enableZsh = import ./enable-zsh.nix { inherit pkgs; };
 
+  astyle31 = pkgs.astyle.overrideAttrs (old: {
+    version = "3.1";
+
+    src = pkgs.fetchurl {
+      url = "https://downloads.sourceforge.net/project/astyle/astyle/astyle%203.1/astyle_3.1_linux.tar.gz";
+      hash = "sha256-y8xM+ZYpRTS7VvAl1vGZ6/3oGqTCccy9XuHBoxknRdc=";
+    };
+
+    cmakeFlags = (old.cmakeFlags or []) ++ [
+      "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+    ];
+
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 astyle $out/bin/astyle
+      runHook postInstall
+    '';
+  });
+
   opencvGui = pkgs.opencv.override {
     enableGtk3 = true;
   };
@@ -18,6 +37,7 @@ pkgs.mkShell {
   ];
 
   buildInputs = with pkgs; [
+    astyle31
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
     ffmpeg_6
