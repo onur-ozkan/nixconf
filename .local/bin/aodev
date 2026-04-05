@@ -1,4 +1,11 @@
 #!/bin/sh
 
-dmenu_input=$(pw-cli list-objects | awk -F '"' '/_output/ && /node.name/{print $2}' | dmenu -l 15)
-wpctl set-default "$dmenu_input"
+dmenu_input=$(
+  wpctl status | awk '
+    /Sinks:/ { sinks = 1; next }
+    sinks && /:$/ { exit }
+    sinks && match($0, /[0-9]+\./) { print substr($0, RSTART) }
+  ' | dmenu -l 15 -p "Sink:"
+)
+
+[ -n "$dmenu_input" ] && wpctl set-default "${dmenu_input%%.*}"
