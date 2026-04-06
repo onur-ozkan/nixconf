@@ -8,6 +8,7 @@ let
     brave
     claws-mail
     cmake
+    config.boot.kernelPackages.perf
     curl
     dmenu-enhanced
     docker
