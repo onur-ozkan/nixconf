@@ -24,6 +24,7 @@ let
     inotify-tools
     pciutils
     pkg-config
+    python3
     ripgrep
     rsync
     rustup
