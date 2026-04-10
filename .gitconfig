@@ -19,6 +19,6 @@
 
 [sendemail]
 	smtpencryption = tls
-	smtpserver = smtp.yandex.com
+	smtpserver = smtp.protonmail.ch
 	smtpuser = work@onurozkan.dev
 	smtpserverport = 587
