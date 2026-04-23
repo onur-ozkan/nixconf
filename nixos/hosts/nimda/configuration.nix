@@ -26,6 +26,18 @@
   programs.zsh.enable = true;
   programs.slock.enable = true;
 
+  fonts.fontconfig.defaultFonts = {
+    serif = [ "Noto Serif" "Noto Color Emoji" ];
+    sansSerif = [ "Noto Sans" "Noto Color Emoji" ];
+    monospace = [
+      "RobotoMono Nerd Font"
+      "Hack Nerd Font"
+      "Noto Sans Mono"
+      "Noto Color Emoji"
+    ];
+    emoji = [ "Noto Color Emoji" ];
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -41,24 +53,6 @@
   time.timeZone = "Europe/Istanbul";
   i18n.defaultLocale = "en_US.UTF-8";
   console.keyMap = "us";
-
-  fonts.packages = with pkgs; [
-    corefonts
-    liberation_ttf
-    nerd-fonts.hack
-    nerd-fonts.roboto-mono
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-cjk-serif
-    noto-fonts-color-emoji
-  ];
-
-  fonts.fontconfig.defaultFonts = {
-    serif = [ "Noto Serif" "Noto Serif CJK SC" ];
-    sansSerif = [ "Noto Sans" "Noto Sans CJK SC" ];
-    monospace = [ "DejaVu Sans Mono" "Noto Sans Mono CJK SC" ];
-    emoji = [ "Noto Color Emoji" ];
-  };
 
   users.users.nimda = {
     isNormalUser = true;

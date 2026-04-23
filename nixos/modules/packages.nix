@@ -5,6 +5,7 @@ let
 
   basePackages = with pkgs; [
     acpi
+    bc
     brave
     claws-mail
     cmake
@@ -82,6 +83,13 @@ in {
       ++ lib.optionals cfg.bluetooth bluetoothPackages
       ++ lib.optionals cfg.laptop laptopPackages
       ++ lib.optionals cfg.nvidia_driver [ config.boot.kernelPackages.nvidiaPackages.production ];
+
+    fonts.packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      noto-fonts-color-emoji
+    ];
 
     services.pulseaudio.enable = false;
     security.rtkit.enable = true;
