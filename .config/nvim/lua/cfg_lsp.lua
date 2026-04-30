@@ -186,6 +186,52 @@ vim.lsp.config('rust_analyzer', {
 	on_attach = on_attach,
 	capabilities = capabilities
 })
+
+local function rustc_expand()
+	local source_name = vim.fn.expand('%:t')
+	if source_name == '' then
+		source_name = 'buffer'
+	end
+	local cargo_toml = vim.fs.find('Cargo.toml', {
+		path = vim.fn.expand('%:p:h'),
+		upward = true,
+	})[1]
+	if not cargo_toml then
+		vim.notify('Cargo.toml not found', vim.log.levels.ERROR)
+		return
+	end
+
+	vim.system({
+		'cargo',
+		'rustc',
+		'--profile=check',
+		'--quiet',
+		'--',
+		'-Zunpretty=expanded',
+	}, {
+		cwd = vim.fs.dirname(cargo_toml),
+		env = { RUSTC_BOOTSTRAP = '1' },
+		text = true,
+	}, function(result)
+		vim.schedule(function()
+			if result.code ~= 0 then
+				vim.notify(result.stderr, vim.log.levels.ERROR)
+				return
+			end
+
+			vim.cmd('tabnew')
+			vim.bo.buftype = 'nofile'
+			vim.bo.bufhidden = 'wipe'
+			vim.bo.swapfile = false
+			vim.bo.filetype = 'rust'
+			vim.api.nvim_buf_set_name(0, '[RustcExpand: ' .. source_name .. ']')
+			vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(result.stdout, '\n', { plain = true }))
+			vim.bo.modifiable = false
+		end)
+	end)
+end
+
+vim.api.nvim_create_user_command('RustcExpand', rustc_expand, {})
 -- rust
 
 -- golang
