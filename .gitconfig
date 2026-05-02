@@ -1,8 +1,8 @@
 [init]
-	defaultBranch = stable
+	defaultBranch = main
 
 [core]
-	editor = vim
+editor = vim
 
 [commit]
 	verbose = true
@@ -22,3 +22,6 @@
 	smtpserver = smtp.protonmail.ch
 	smtpuser = work@onurozkan.dev
 	smtpserverport = 587
+	annotate = yes
+    thread = yes
+    chainreplyto = no
