@@ -78,6 +78,38 @@ telescope.setup {
         },
     },
     pickers = {
+        find_files = {
+            prompt_title = 'Find Files',
+            results_title = false,
+            preview_title = false,
+            hidden = true,
+            find_command = {
+                'rg',
+                '--files',
+                '--hidden',
+                '--glob',
+                '!.git',
+                '--glob',
+                '!.git/**',
+            },
+            layout_strategy = 'vertical',
+            layout_config = {
+                width = 0.88,
+                height = 0.9,
+                vertical = {
+                    mirror = true,
+                    prompt_position = 'top',
+                    preview_height = function(_, _, height)
+                        return math.max(math.floor(height * 0.68), 1)
+                    end,
+                },
+            },
+            borderchars = {
+                prompt = { '─', '│', ' ', '│', '╭', '╮', '│', '│' },
+                results = { ' ', '│', '─', '│', '│', '│', '╯', '╰' },
+                preview = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+            },
+        },
         live_grep = {
             entry_maker = compact_vimgrep_entry({}),
             prompt_title = 'Search in Files',
