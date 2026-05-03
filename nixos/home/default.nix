@@ -49,17 +49,6 @@ in {
           sha256 = "sha256-P+X2biB7yt9GIMzZ09neH0r0JeHyUYQvHhBJUsEXKMo=";
         };
       })
-      (pkgs.vimUtils.buildVimPlugin {
-        pname = "vim-esearch";
-        version = "unstable";
-        src = pkgs.fetchFromGitHub {
-          owner = "onur-ozkan-backups";
-          repo = "vim-esearch";
-          rev = "d4703a6";
-          sha256 = "sha256-Aett3CSMbLYFaWIRYIRCQXG9xl0qUZQK1CUER4ggKkc=";
-        };
-        doCheck = false;
-      })
     ];
   };
 

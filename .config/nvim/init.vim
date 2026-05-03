@@ -100,10 +100,6 @@
 	let g:loaded_node_provider = 0
 	let g:loaded_perl_provider = 0
 	let g:loaded_ruby_provider = 0
-
-	let g:esearch = {}
-	" Set the root as current working directory as default for esearch plugin
-	let g:esearch.root_markers = []
 " Settings }
 
 " Functions {
