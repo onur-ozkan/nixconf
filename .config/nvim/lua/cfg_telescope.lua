@@ -60,6 +60,28 @@ local function focus_preview_from_insert(prompt_bufnr)
     focus_preview(prompt_bufnr)
 end
 
+local function search_window_options()
+    return {
+        layout_strategy = 'vertical',
+        layout_config = {
+            width = 0.88,
+            height = 0.9,
+            vertical = {
+                mirror = true,
+                prompt_position = 'top',
+                preview_height = function(_, _, height)
+                    return math.max(math.floor(height * 0.68), 1)
+                end,
+            },
+        },
+        borderchars = {
+            prompt = { '─', '│', ' ', '│', '╭', '╮', '│', '│' },
+            results = { ' ', '│', '─', '│', '│', '│', '╯', '╰' },
+            preview = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+        },
+    }
+end
+
 telescope.setup {
     defaults = {
         layout_strategy = 'horizontal',
@@ -78,7 +100,7 @@ telescope.setup {
         },
     },
     pickers = {
-        find_files = {
+        find_files = vim.tbl_extend('force', search_window_options(), {
             prompt_title = 'Find Files',
             results_title = false,
             preview_title = false,
@@ -92,46 +114,17 @@ telescope.setup {
                 '--glob',
                 '!.git/**',
             },
-            layout_strategy = 'vertical',
-            layout_config = {
-                width = 0.88,
-                height = 0.9,
-                vertical = {
-                    mirror = true,
-                    prompt_position = 'top',
-                    preview_height = function(_, _, height)
-                        return math.max(math.floor(height * 0.68), 1)
-                    end,
-                },
-            },
-            borderchars = {
-                prompt = { '─', '│', ' ', '│', '╭', '╮', '│', '│' },
-                results = { ' ', '│', '─', '│', '│', '│', '╯', '╰' },
-                preview = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
-            },
-        },
-        live_grep = {
+        }),
+        live_grep = vim.tbl_extend('force', search_window_options(), {
             entry_maker = compact_vimgrep_entry({}),
             prompt_title = 'Search in Files',
             results_title = false,
             preview_title = false,
-            layout_strategy = 'vertical',
-            layout_config = {
-                width = 0.88,
-                height = 0.9,
-                vertical = {
-                    mirror = true,
-                    prompt_position = 'top',
-                    preview_height = function(_, _, height)
-                        return math.max(math.floor(height * 0.68), 1)
-                    end,
-                },
-            },
-            borderchars = {
-                prompt = { '─', '│', ' ', '│', '╭', '╮', '│', '│' },
-                results = { ' ', '│', '─', '│', '│', '│', '╯', '╰' },
-                preview = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
-            },
-        },
+        }),
+        git_status = vim.tbl_extend('force', search_window_options(), {
+            prompt_title = 'Status',
+            results_title = false,
+            preview_title = 'Diff',
+        }),
     },
 }
