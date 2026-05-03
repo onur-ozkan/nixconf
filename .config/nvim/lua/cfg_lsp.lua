@@ -85,13 +85,6 @@ vim.diagnostic.config({
 
 -- Autocomplete
 local cmp = require 'cmp'
-local cmp_lsp = require 'cmp_nvim_lsp'
-
--- returns true when there's space/tab before cursor
-local check_back_space = function()
-    local col = vim.fn.col '.' - 1
-    return col == 0 or vim.fn.getline('.'):sub(col, col):match '%s' ~= nil
-end
 
 local has_words_before = function()
     if vim.bo[0].buftype == "prompt" then
