@@ -1,5 +1,31 @@
 local telescope = require 'telescope'
 local action_state = require 'telescope.actions.state'
+local make_entry = require 'telescope.make_entry'
+local utils = require 'telescope.utils'
+
+local function compact_vimgrep_entry(opts)
+    local base_entry_maker = make_entry.gen_from_vimgrep(opts)
+
+    return function(line)
+        local entry = base_entry_maker(line)
+
+        if not entry then
+            return nil
+        end
+
+        entry.display = function(current_entry)
+            local display, path_style = utils.transform_path(opts, current_entry.filename)
+
+            if current_entry.lnum then
+                display = string.format('%s:%s', display, current_entry.lnum)
+            end
+
+            return display, path_style
+        end
+
+        return entry
+    end
+end
 
 local function focus_preview(prompt_bufnr)
     local picker = action_state.get_current_picker(prompt_bufnr)
@@ -21,7 +47,7 @@ local function focus_preview(prompt_bufnr)
         return
     end
 
-    vim.keymap.set('n', '<C-Left>', function()
+    vim.keymap.set('n', '<C-Up>', function()
         vim.cmd(string.format('noautocmd lua vim.api.nvim_set_current_win(%s)', prompt_win))
         vim.cmd 'startinsert'
     end, { buffer = bufnr, noremap = true, silent = true })
@@ -36,12 +62,43 @@ end
 
 telescope.setup {
     defaults = {
+        layout_strategy = 'horizontal',
+        layout_config = {
+            horizontal = {
+                preview_width = 0.68,
+            },
+        },
         mappings = {
             i = {
-                ['<C-Right>'] = focus_preview_from_insert,
+                ['<C-Down>'] = focus_preview_from_insert,
             },
             n = {
-                ['<C-Right>'] = focus_preview,
+                ['<C-Down>'] = focus_preview,
+            },
+        },
+    },
+    pickers = {
+        live_grep = {
+            entry_maker = compact_vimgrep_entry({}),
+            prompt_title = 'Search in Files',
+            results_title = false,
+            preview_title = false,
+            layout_strategy = 'vertical',
+            layout_config = {
+                width = 0.88,
+                height = 0.9,
+                vertical = {
+                    mirror = true,
+                    prompt_position = 'top',
+                    preview_height = function(_, _, height)
+                        return math.max(math.floor(height * 0.68), 1)
+                    end,
+                },
+            },
+            borderchars = {
+                prompt = { '─', '│', ' ', '│', '╭', '╮', '│', '│' },
+                results = { ' ', '│', '─', '│', '│', '│', '╯', '╰' },
+                preview = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
             },
         },
     },
