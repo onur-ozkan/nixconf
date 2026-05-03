@@ -45,8 +45,8 @@ in {
         src = pkgs.fetchFromGitHub {
           owner = "onur-ozkan";
           repo = "dark-energy.vim";
-          rev = "31afba7";
-          sha256 = "sha256-BtRpyRpLRJl/gMZCF51ltgifAqwxXWpQ+OXm2Yy6wZQ=";
+          rev = "c28ec53";
+          sha256 = "sha256-P+X2biB7yt9GIMzZ09neH0r0JeHyUYQvHhBJUsEXKMo=";
         };
       })
       (pkgs.vimUtils.buildVimPlugin {
