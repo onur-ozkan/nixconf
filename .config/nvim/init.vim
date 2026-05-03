@@ -160,3 +160,4 @@
 lua require('./cfg_lualine')
 lua require('./cfg_nvimtree')
 lua require('./cfg_lsp')
+lua require('./cfg_telescope')
