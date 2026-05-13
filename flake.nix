@@ -10,7 +10,7 @@
       flake = false;
     };
     st-enhanced = {
-      url = "github:onur-ozkan/st-enhanced?rev=87d3220955b5c21ffc9bee4d63f3362a5a6adb3f";
+      url = "github:onur-ozkan/st-enhanced?rev=25fd67c02859822a966d3dc1adbd218647329946";
       flake = false;
     };
     dmenu-enhanced = {
