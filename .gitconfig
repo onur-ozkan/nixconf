@@ -23,5 +23,5 @@ editor = vim
 	smtpuser = work@onurozkan.dev
 	smtpserverport = 587
 	annotate = yes
-    thread = yes
-    chainreplyto = no
+	thread = yes
+	chainreplyto = no
