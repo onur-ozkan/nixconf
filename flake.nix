@@ -29,6 +29,10 @@
       url = "github:onur-ozkan/sbs?rev=2cf5b9838a2da25522f61d7b29448fda81dc0167";
       flake = false;
     };
+    mreply = {
+      url = "github:onur-ozkan/mreply?rev=a2034f683c41b7a3e7d265aac0906b493c9a3da3";
+      flake = false;
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ... }:

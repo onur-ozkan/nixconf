@@ -23,6 +23,7 @@ let
     go
     htop
     inotify-tools
+    mreply
     pciutils
     pkg-config
     python3
