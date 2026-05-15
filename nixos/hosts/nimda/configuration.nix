@@ -20,6 +20,7 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (import ../../overlays/suckless.nix { inherit inputs; })
+    (import ../../overlays/mreply.nix { inherit inputs; })
   ];
 
   programs.nix-ld.enable = true;
