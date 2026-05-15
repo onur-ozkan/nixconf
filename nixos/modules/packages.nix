@@ -9,7 +9,6 @@ let
     brave
     claws-mail
     cmake
-    config.boot.kernelPackages.perf
     curl
     dmenu-enhanced
     docker
@@ -25,6 +24,7 @@ let
     inotify-tools
     mreply
     pciutils
+    perf
     pkg-config
     python3
     ripgrep
