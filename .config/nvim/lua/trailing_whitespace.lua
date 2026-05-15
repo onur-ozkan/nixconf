@@ -6,7 +6,7 @@ local function set_highlight()
 end
 
 local function show()
-    vim.cmd([[match TrailingWhitespace /\s\+$/]])
+    vim.cmd([[match TrailingWhitespace /\s\+\%#\@!$/]])
 end
 
 local function setup(group)
