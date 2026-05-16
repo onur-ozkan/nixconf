@@ -7,21 +7,8 @@ editor = vim
 [commit]
 	verbose = true
 
-[user]
-	email = work@onurozkan.dev
-	name = Onur Özkan
-
 [pull]
 	rebase = false
 
 [merge]
 	tool = vimdiff
-
-[sendemail]
-	smtpencryption = tls
-	smtpserver = smtp.protonmail.ch
-	smtpuser = work@onurozkan.dev
-	smtpserverport = 587
-	annotate = yes
-	thread = yes
-	chainreplyto = no
