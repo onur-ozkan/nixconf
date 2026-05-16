@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  resolvePath,
+  ...
+}: let
   cfg = config.nimda.profile;
 
   basePackages = with pkgs; [
@@ -62,10 +66,9 @@ let
   ];
 
   dwmblocksPatch =
-    if cfg.laptop then
-      ../patches/dwmblock-enhanced/laptop.patch
-    else
-      ../patches/dwmblock-enhanced/desktop.patch;
+    if cfg.laptop
+    then resolvePath "nixos/patches/dwmblock-enhanced/laptop.patch"
+    else resolvePath "nixos/patches/dwmblock-enhanced/desktop.patch";
 
   dwmblocksEnhanced = pkgs.dwmblocks-enhanced.overrideAttrs (old: {
     patches = (old.patches or [ ]) ++ [ dwmblocksPatch ];

@@ -35,36 +35,56 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }:
-    let
-      inherit (nixpkgs.lib) genAttrs;
-      systems = [ "x86_64-linux" ];
-    in {
-      formatter = genAttrs systems (system: nixpkgs.legacyPackages.${system}.alejandra);
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    home-manager,
+    ...
+  }: let
+    inherit (nixpkgs.lib) genAttrs;
+    systems = ["x86_64-linux"];
+    repoRoot = ./.;
+    overrideRoot = repoRoot + "/override";
+    resolvePath = relativePath: let
+      overridePath = overrideRoot + "/${relativePath}";
+      defaultPath = repoRoot + "/${relativePath}";
+    in
+      if builtins.pathExists overridePath
+      then overridePath
+      else defaultPath;
+  in {
+    formatter = genAttrs systems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-      nixosConfigurations.nimda = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./nixos/hosts/nimda/configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.nimda = import ./nixos/home;
-          }
-        ];
+    nixosConfigurations.nimda = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = {
+        inherit inputs overrideRoot repoRoot resolvePath;
       };
-
-      devShells.x86_64-linux.lkdev = import ./nixos/shells/lkdev.nix {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      };
-
-      devShells.x86_64-linux.orkavian = import ./nixos/shells/orkavian.nix {
-        pkgs = import nixpkgs {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-        };
-      };
+      modules = [
+        (resolvePath "nixos/hosts/nimda/configuration.nix")
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = {
+            inherit overrideRoot repoRoot resolvePath;
+          };
+          home-manager.users.nimda = import (resolvePath "nixos/home");
+        }
+      ];
     };
-  }
+
+    devShells.x86_64-linux.lkdev = import (resolvePath "nixos/shells/lkdev.nix") {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      inherit resolvePath;
+    };
+
+    devShells.x86_64-linux.orkavian = import (resolvePath "nixos/shells/orkavian.nix") {
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+      };
+      inherit resolvePath;
+    };
+  };
+}

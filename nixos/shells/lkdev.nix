@@ -1,8 +1,13 @@
-{ pkgs ? import <nixpkgs> {} }:
-
-let
+{
+  pkgs ? import <nixpkgs> {},
+  resolvePath ? null,
+}: let
   aarch64Toolchain = pkgs.pkgsCross.aarch64-multiplatform.buildPackages;
-  enableZsh = import ./enable-zsh.nix { inherit pkgs; };
+  enableZsh = import (
+    if resolvePath == null
+    then ./enable-zsh.nix
+    else resolvePath "nixos/shells/enable-zsh.nix"
+  ) {inherit pkgs;};
   inherit (pkgs.llvmPackages) clang;
   inherit (pkgs) lib writers;
 
@@ -30,37 +35,37 @@ let
   '';
 in
 
-pkgs.mkShell {
-  packages = with pkgs; [
-    aarch64Toolchain.binutils
-    aarch64Toolchain.gcc
-    b4
-    bison
-    elfutils
-    flex
-    gcc
-    glibc.dev
-    gnutls.dev
-    llvmPackages.lld
-    llvmPackages.llvm
-    openssl.dev
-    picocom
-    qemu
-    rustup
-    swig
-    wrappedClang
+  pkgs.mkShell {
+    packages = with pkgs; [
+      aarch64Toolchain.binutils
+      aarch64Toolchain.gcc
+      b4
+      bison
+      elfutils
+      flex
+      gcc
+      glibc.dev
+      gnutls.dev
+      llvmPackages.lld
+      llvmPackages.llvm
+      openssl.dev
+      picocom
+      qemu
+      rustup
+      swig
+      wrappedClang
 
     (python3.withPackages (ps: with ps; [
-      setuptools
-    ]))
-  ];
+          setuptools
+        ]))
+    ];
 
-  nativeBuildInputs = with pkgs; [
-    rust-bindgen
-  ];
+    nativeBuildInputs = with pkgs; [
+      rust-bindgen
+    ];
 
   shellHook = ''
-    export NIX_DEV_SHELL_NAME="lkdev"
-    export BINDGEN_EXTRA_CLANG_ARGS="-Wno-unused-command-line-argument"
+        export NIX_DEV_SHELL_NAME="lkdev"
+        export BINDGEN_EXTRA_CLANG_ARGS="-Wno-unused-command-line-argument"
   '' + enableZsh;
-}
+  }

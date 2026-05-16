@@ -1,13 +1,18 @@
-{ config, pkgs, lib, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  resolvePath,
+  ...
+}: {
   imports = [
-    ./hardware-configuration.nix
-    ../../modules/packages.nix
+    (resolvePath "nixos/hosts/nimda/hardware-configuration.nix")
+    (resolvePath "nixos/modules/packages.nix")
   ];
 
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = ["nix-command" "flakes"];
     auto-optimise-store = true;
   };
 
@@ -19,8 +24,8 @@
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
-    (import ../../overlays/suckless.nix { inherit inputs; })
-    (import ../../overlays/mreply.nix { inherit inputs; })
+    (import (resolvePath "nixos/overlays/suckless.nix") {inherit inputs;})
+    (import (resolvePath "nixos/overlays/mreply.nix") {inherit inputs;})
   ];
 
   programs.nix-ld.enable = true;
@@ -28,22 +33,22 @@
   programs.slock.enable = true;
 
   fonts.fontconfig.defaultFonts = {
-    serif = [ "Noto Serif" "Noto Color Emoji" ];
-    sansSerif = [ "Noto Sans" "Noto Color Emoji" ];
+    serif = ["Noto Serif" "Noto Color Emoji"];
+    sansSerif = ["Noto Sans" "Noto Color Emoji"];
     monospace = [
       "RobotoMono Nerd Font"
       "Hack Nerd Font"
       "Noto Sans Mono"
       "Noto Color Emoji"
     ];
-    emoji = [ "Noto Color Emoji" ];
+    emoji = ["Noto Color Emoji"];
   };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.kernelModules = [ "v4l2loopback" ];
-  boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+  boot.kernelModules = ["v4l2loopback"];
+  boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=2 exclusive_caps=1
   '';

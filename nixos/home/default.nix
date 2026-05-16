@@ -1,7 +1,26 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  overrideRoot,
+  repoRoot,
+  resolvePath,
+  ...
+}: let
   homeDir = config.home.homeDirectory;
+  mergeDirectorySource = relativePath: let
+    overridePath = overrideRoot + "/${relativePath}";
+    basePath = repoRoot + "/${relativePath}";
+    sanitizedName = lib.replaceStrings ["/" "."] ["-" "-"] relativePath;
+  in
+    if builtins.pathExists overridePath
+    then
+      pkgs.runCommandLocal "nixconf-override-${sanitizedName}" {} ''
+        mkdir -p "$out"
+        cp -a ${basePath}/. "$out"/
+        cp -a ${overridePath}/. "$out"/
+      ''
+    else basePath;
 in {
   home.username = "nimda";
   home.homeDirectory = "/home/nimda";
@@ -22,8 +41,8 @@ in {
     autosuggestion.enable = true;
     enableCompletion = true;
     syntaxHighlighting.enable = true;
-    envExtra = builtins.readFile ../../.zshenv;
-    initContent = builtins.readFile ../../.zshrc;
+    envExtra = builtins.readFile (resolvePath ".zshenv");
+    initContent = builtins.readFile (resolvePath ".zshrc");
   };
 
   programs.neovim = {
@@ -54,7 +73,7 @@ in {
 
   programs.tmux = {
     enable = true;
-    extraConfig = builtins.readFile ../../.tmux.conf;
+    extraConfig = builtins.readFile (resolvePath ".tmux.conf");
   };
 
   programs.ssh = {
@@ -81,38 +100,38 @@ in {
     };
   };
 
-  home.file.".Xresources".source = ../../.Xresources;
-  home.file.".xinitrc".source = ../../.xinitrc;
-  home.file.".gitconfig".source = ../../.gitconfig;
-  home.file.".dircolors".source = ../../.dircolors;
+  home.file.".Xresources".source = resolvePath ".Xresources";
+  home.file.".xinitrc".source = resolvePath ".xinitrc";
+  home.file.".gitconfig".source = resolvePath ".gitconfig";
+  home.file.".dircolors".source = resolvePath ".dircolors";
 
   home.file.".dwm" = {
-    source = ../../.dwm;
+    source = mergeDirectorySource ".dwm";
     recursive = true;
   };
 
   home.file.".local/share/fonts" = {
-    source = ../../fonts;
+    source = mergeDirectorySource "fonts";
     recursive = true;
   };
 
   home.file.".local/bin" = {
-    source = ../../.local/bin;
+    source = mergeDirectorySource ".local/bin";
     recursive = true;
   };
 
   home.file.".config/nvim" = {
-    source = ../../.config/nvim;
+    source = mergeDirectorySource ".config/nvim";
     recursive = true;
   };
 
   home.file.".config/remote-shell" = {
-    source = ../../.config/remote-shell;
+    source = mergeDirectorySource ".config/remote-shell";
     recursive = true;
   };
 
   home.file.".backgrounds" = {
-    source = ../../.backgrounds;
+    source = mergeDirectorySource ".backgrounds";
     recursive = true;
   };
 

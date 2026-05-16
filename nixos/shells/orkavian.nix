@@ -1,7 +1,12 @@
-{ pkgs ? import <nixpkgs> {} }:
-
-let
-  enableZsh = import ./enable-zsh.nix { inherit pkgs; };
+{
+  pkgs ? import <nixpkgs> {},
+  resolvePath ? null,
+}: let
+  enableZsh = import (
+    if resolvePath == null
+    then ./enable-zsh.nix
+    else resolvePath "nixos/shells/enable-zsh.nix"
+  ) {inherit pkgs;};
 
   astyle31 = pkgs.astyle.overrideAttrs (old: {
     version = "3.1";
@@ -12,8 +17,8 @@ let
     };
 
     cmakeFlags = (old.cmakeFlags or []) ++ [
-      "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
-    ];
+        "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+      ];
 
     installPhase = ''
       runHook preInstall
@@ -27,76 +32,76 @@ let
   };
 in
 
-pkgs.mkShell {
-  nativeBuildInputs = with pkgs; [
-    clang
-    cmake
-    pkg-config
-    rustup
-    wasm-pack
-  ];
+  pkgs.mkShell {
+    nativeBuildInputs = with pkgs; [
+      clang
+      cmake
+      pkg-config
+      rustup
+      wasm-pack
+    ];
 
-  buildInputs = with pkgs; [
-    astyle31
-    cudaPackages.cudatoolkit
-    cudaPackages.cudnn
-    ffmpeg_6
-    fontconfig
-    glib
-    gtk3
-    libglvnd
-    libxkbcommon
-    llvmPackages.libclang
-    llvmPackages.libcxx
-    mesa
-    mpv
-    nodejs
-    opencvGui
-    qgroundcontrol
-    socat
-    stdenv.cc.cc.lib
-    vlc
-    vulkan-loader
-    xorg.libX11
-    xorg.libxcb
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXrandr
-    zlib
+    buildInputs = with pkgs; [
+      astyle31
+      cudaPackages.cudatoolkit
+      cudaPackages.cudnn
+      ffmpeg_6
+      fontconfig
+      glib
+      gtk3
+      libglvnd
+      libxkbcommon
+      llvmPackages.libclang
+      llvmPackages.libcxx
+      mesa
+      mpv
+      nodejs
+      opencvGui
+      qgroundcontrol
+      socat
+      stdenv.cc.cc.lib
+      vlc
+      vulkan-loader
+      xorg.libX11
+      xorg.libxcb
+      xorg.libXcursor
+      xorg.libXi
+      xorg.libXrandr
+      zlib
 
     (python310.withPackages (ps: with ps; [
-      pip
-      setuptools
-      wheel
-    ]))
-  ];
+          pip
+          setuptools
+          wheel
+        ]))
+    ];
 
-  LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-    pkgs.cudaPackages.cudatoolkit
-    pkgs.cudaPackages.cudnn
-    pkgs.glib
-    pkgs.gtk3
-    pkgs.libglvnd
-    pkgs.libxkbcommon
-    pkgs.mesa
-    pkgs.stdenv.cc.cc.lib
-    pkgs.vulkan-loader
-    pkgs.xorg.libX11
-    pkgs.xorg.libxcb
-    pkgs.xorg.libXcursor
-    pkgs.xorg.libXi
-    pkgs.xorg.libXrandr
-    pkgs.zlib
-  ];
+    LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+      pkgs.cudaPackages.cudatoolkit
+      pkgs.cudaPackages.cudnn
+      pkgs.glib
+      pkgs.gtk3
+      pkgs.libglvnd
+      pkgs.libxkbcommon
+      pkgs.mesa
+      pkgs.stdenv.cc.cc.lib
+      pkgs.vulkan-loader
+      pkgs.xorg.libX11
+      pkgs.xorg.libxcb
+      pkgs.xorg.libXcursor
+      pkgs.xorg.libXi
+      pkgs.xorg.libXrandr
+      pkgs.zlib
+    ];
 
   shellHook = ''
-    export NIX_DEV_SHELL_NAME="orkavian"
+        export NIX_DEV_SHELL_NAME="orkavian"
 
-    export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"
-    export CUDA_PATH="${pkgs.cudaPackages.cudatoolkit}"
+        export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"
+        export CUDA_PATH="${pkgs.cudaPackages.cudatoolkit}"
 
-    if [ -d /run/opengl-driver/lib ]; then
-      export LD_LIBRARY_PATH="/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    fi
+        if [ -d /run/opengl-driver/lib ]; then
+          export LD_LIBRARY_PATH="/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        fi
   '' + enableZsh;
-}
+  }
