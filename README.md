@@ -5,19 +5,28 @@ NixOS bootstrapper that sets up my development environment on top of
 
 ## Bootstrap
 
-1. Replace the placeholder `nixos/hosts/nimda/hardware-configuration.nix` with
-the actual `hardware-configuration.nix` of the system. 
+1. Use `override/` directory for any local-only changes.
 
-2. Adjust host/user details in `nixos/hosts/nimda/configuration.nix` and `nixos/home/default.nix`.
+	The path must mirror the repository path exactly e.g.:
+
+	- `override/nixos/hosts/nimda/hardware-configuration.nix`
+	- `override/nixos/hosts/nimda/configuration.nix`
+	- `override/nixos/home/default.nix`
+	- `override/.local/bin/remote-shell`
+	- `override/.config/remote-shell/config.toml`
+
+	If a matching path exists under `override/`, Nix will use that path instead of the tracked file.
+
+2. Put your system-specific `hardware-configuration.nix` at `override/nixos/hosts/nimda/hardware-configuration.nix`.
 
 3. (optional) Review the patches in `nixos/patches` and modify or remove any you don't
 need (if you remove any, you may need to update dwmblocksPatch in `nixos/modules/packages.nix`).
 
-4. Run:
+4. Run the flake as a local path so ignored files in `override/` are visible:
 
 ```
 # The default hostname is "nimda".
-sudo nixos-rebuild switch --flake .#${hostname}
+sudo nixos-rebuild switch --flake "path:$PWD#${hostname}"
 ```
 
 ## Development Shells
@@ -28,7 +37,7 @@ on your system add this flake to your local registry.
 1. Register nixconf:
 
 ```
-nix registry add nixconf $path_to_nixconf
+nix registry add nixconf "path:$path_to_nixconf"
 ```
 
 2. Launch a shell (run from any directory):
