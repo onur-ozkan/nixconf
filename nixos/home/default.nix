@@ -18,6 +18,7 @@
       pkgs.runCommandLocal "nixconf-override-${sanitizedName}" {} ''
         mkdir -p "$out"
         cp -a ${basePath}/. "$out"/
+        chmod -R u+w "$out"
         cp -a ${overridePath}/. "$out"/
       ''
     else basePath;
