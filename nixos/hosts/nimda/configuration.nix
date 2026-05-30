@@ -117,5 +117,5 @@
     /srv/nfs/opi5 *(rw,sync,no_subtree_check,no_root_squash)
   '';
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

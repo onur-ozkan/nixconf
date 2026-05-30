@@ -25,7 +25,7 @@
 in {
   home.username = "nimda";
   home.homeDirectory = "/home/nimda";
-  home.stateVersion = "25.11";
+  home.stateVersion = "26.05";
   home.sessionPath = [
     "${config.home.homeDirectory}/.local/bin"
     "${config.home.homeDirectory}/.local/bin/statusbar"
