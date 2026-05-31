@@ -49,7 +49,7 @@ in {
     basePackage = prev.slock;
     pname = "slock-enhanced";
     srcName = "slock-enhanced";
-    extraBuildInputs = [ prev.xorg.libXrandr ];
+    extraBuildInputs = [ prev.libxrandr ];
   };
 
   sbs = prev.sbs.overrideAttrs (old: {

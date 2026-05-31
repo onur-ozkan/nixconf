@@ -62,11 +62,11 @@ in
       stdenv.cc.cc.lib
       vlc
       vulkan-loader
-      xorg.libX11
-      xorg.libxcb
-      xorg.libXcursor
-      xorg.libXi
-      xorg.libXrandr
+      libx11
+      libxcb
+      libxcursor
+      libxi
+      libxrandr
       zlib
 
     (python310.withPackages (ps: with ps; [
@@ -86,11 +86,11 @@ in
       pkgs.mesa
       pkgs.stdenv.cc.cc.lib
       pkgs.vulkan-loader
-      pkgs.xorg.libX11
-      pkgs.xorg.libxcb
-      pkgs.xorg.libXcursor
-      pkgs.xorg.libXi
-      pkgs.xorg.libXrandr
+      pkgs.libx11
+      pkgs.libxcb
+      pkgs.libxcursor
+      pkgs.libxi
+      pkgs.libxrandr
       pkgs.zlib
     ];
 

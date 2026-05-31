@@ -80,24 +80,24 @@ in {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks."*" = {
-      forwardAgent = false;
-      addKeysToAgent = "no";
-      compression = false;
-      serverAliveInterval = 0;
-      serverAliveCountMax = 3;
-      hashKnownHosts = false;
-      userKnownHostsFile = "~/.ssh/known_hosts";
+    settings."*" = {
+      ForwardAgent = false;
+      AddKeysToAgent = "no";
+      Compression = false;
+      ServerAliveInterval = 0;
+      ServerAliveCountMax = 3;
+      HashKnownHosts = false;
+      UserKnownHostsFile = "~/.ssh/known_hosts";
     };
-    matchBlocks."git.orkavian.com" = {
-      hostname = "git.orkavian.com";
-      port = 4022;
+    settings."git.orkavian.com" = {
+      HostName = "git.orkavian.com";
+      Port = 4022;
     };
-    matchBlocks."ssh.gitlab.freedesktop.org" = {
-      hostname = "ssh.gitlab.freedesktop.org";
-      user = "git";
-      identityFile = "${homeDir}/.ssh/gitlab_freedesktop_org";
-      identitiesOnly = true;
+    settings."ssh.gitlab.freedesktop.org" = {
+      HostName = "ssh.gitlab.freedesktop.org";
+      User = "git";
+      IdentityFile = "${homeDir}/.ssh/gitlab_freedesktop_org";
+      IdentitiesOnly = true;
     };
   };
 

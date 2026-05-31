@@ -45,11 +45,11 @@
     wget
     xclip
     xdg-utils
-    xorg.setxkbmap
-    xorg.xinit
-    xorg.xrandr
-    xorg.xrdb
-    xorg.xset
+    setxkbmap
+    xinit
+    xrandr
+    xrdb
+    xset
     zip
   ];
 
@@ -62,7 +62,7 @@
     brightnessctl
     power-profiles-daemon
     powertop
-    xorg.xinput
+    xinput
   ];
 
   dwmblocksPatch =
