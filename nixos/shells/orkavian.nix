@@ -16,7 +16,9 @@
       hash = "sha256-y8xM+ZYpRTS7VvAl1vGZ6/3oGqTCccy9XuHBoxknRdc=";
     };
 
-    cmakeFlags = (old.cmakeFlags or []) ++ [
+    cmakeFlags =
+      (old.cmakeFlags or [])
+      ++ [
         "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
       ];
 
@@ -31,7 +33,6 @@
     enableGtk3 = true;
   };
 in
-
   pkgs.mkShell {
     nativeBuildInputs = with pkgs; [
       clang
@@ -69,7 +70,8 @@ in
       libxrandr
       zlib
 
-    (python310.withPackages (ps: with ps; [
+      (python310.withPackages (ps:
+        with ps; [
           pip
           setuptools
           wheel
@@ -94,7 +96,8 @@ in
       pkgs.zlib
     ];
 
-  shellHook = ''
+    shellHook =
+      ''
         export NIX_DEV_SHELL_NAME="orkavian"
 
         export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib"
@@ -103,5 +106,6 @@ in
         if [ -d /run/opengl-driver/lib ]; then
           export LD_LIBRARY_PATH="/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         fi
-  '' + enableZsh;
+      ''
+      + enableZsh;
   }

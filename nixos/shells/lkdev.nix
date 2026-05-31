@@ -34,7 +34,6 @@
     fi
   '';
 in
-
   pkgs.mkShell {
     packages = with pkgs; [
       aarch64Toolchain.binutils
@@ -55,7 +54,8 @@ in
       swig
       wrappedClang
 
-    (python3.withPackages (ps: with ps; [
+      (python3.withPackages (ps:
+        with ps; [
           setuptools
         ]))
     ];
@@ -64,8 +64,10 @@ in
       rust-bindgen
     ];
 
-  shellHook = ''
+    shellHook =
+      ''
         export NIX_DEV_SHELL_NAME="lkdev"
         export BINDGEN_EXTRA_CLANG_ARGS="-Wno-unused-command-line-argument"
-  '' + enableZsh;
+      ''
+      + enableZsh;
   }

@@ -71,7 +71,7 @@
     else resolvePath "nixos/patches/dwmblock-enhanced/desktop.patch";
 
   dwmblocksEnhanced = pkgs.dwmblocks-enhanced.overrideAttrs (old: {
-    patches = (old.patches or [ ]) ++ [ dwmblocksPatch ];
+    patches = (old.patches or []) ++ [dwmblocksPatch];
   });
 in {
   options.nimda.profile = {
@@ -83,10 +83,10 @@ in {
   config = {
     environment.systemPackages =
       basePackages
-      ++ [ dwmblocksEnhanced ]
+      ++ [dwmblocksEnhanced]
       ++ lib.optionals cfg.bluetooth bluetoothPackages
       ++ lib.optionals cfg.laptop laptopPackages
-      ++ lib.optionals cfg.nvidia_driver [ config.boot.kernelPackages.nvidiaPackages.production ];
+      ++ lib.optionals cfg.nvidia_driver [config.boot.kernelPackages.nvidiaPackages.production];
 
     fonts.packages = with pkgs; [
       noto-fonts
@@ -117,7 +117,7 @@ in {
     virtualisation.docker.enable = true;
 
     services.xserver = lib.mkIf cfg.nvidia_driver {
-      videoDrivers = [ "nvidia" ];
+      videoDrivers = ["nvidia"];
     };
 
     hardware.graphics = lib.mkIf cfg.nvidia_driver {

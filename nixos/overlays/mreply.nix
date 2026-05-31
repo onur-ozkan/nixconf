@@ -1,7 +1,4 @@
-{ inputs }:
-final: prev:
-
-{
+{inputs}: final: prev: {
   mreply = prev.stdenvNoCC.mkDerivation {
     pname = "mreply";
     version = inputs.mreply.rev;
