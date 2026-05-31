@@ -21,10 +21,6 @@ require'nvim-tree'.setup {
 		enable = true,
 		ignore_list = {},
 	},
-	system_open = {
-		cmd = nil,
-		args = {},
-	},
 	diagnostics = {
 		enable = true,
 		show_on_dirs = true,
@@ -105,4 +101,3 @@ require'nvim-tree'.setup {
 		},
 	},
 }
-
