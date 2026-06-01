@@ -86,5 +86,10 @@
       };
       inherit resolvePath;
     };
+
+    devShells.x86_64-linux.kyber = import (resolvePath "nixos/shells/kyber.nix") {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      inherit resolvePath;
+    };
   };
 }
