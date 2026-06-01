@@ -99,6 +99,12 @@ in {
       IdentityFile = "${homeDir}/.ssh/gitlab_freedesktop_org";
       IdentitiesOnly = true;
     };
+    settings."gitlab.com" = {
+      HostName = "gitlab.com";
+      User = "git";
+      IdentityFile = "${homeDir}/.ssh/gitlab_com";
+      IdentitiesOnly = true;
+    };
   };
 
   home.file.".Xresources".source = resolvePath ".Xresources";
