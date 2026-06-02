@@ -3,10 +3,10 @@
   resolvePath ? null,
 }: let
   aarch64Toolchain = pkgs.pkgsCross.aarch64-multiplatform.buildPackages;
-  enableZsh = import (
+  useHostShell = import (
     if resolvePath == null
-    then ./enable-zsh.nix
-    else resolvePath "nixos/shells/enable-zsh.nix"
+    then ./use-host-shell.nix
+    else resolvePath "nixos/shells/use-host-shell.nix"
   ) {inherit pkgs;};
   inherit (pkgs.llvmPackages) clang;
   inherit (pkgs) lib writers;
@@ -69,5 +69,5 @@ in
         export NIX_DEV_SHELL_NAME="lkdev"
         export BINDGEN_EXTRA_CLANG_ARGS="-Wno-unused-command-line-argument"
       ''
-      + enableZsh;
+      + useHostShell;
   }

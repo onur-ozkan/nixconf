@@ -2,10 +2,10 @@
   pkgs ? import <nixpkgs> {},
   resolvePath ? null,
 }: let
-  enableZsh = import (
+  useHostShell = import (
     if resolvePath == null
-    then ./enable-zsh.nix
-    else resolvePath "nixos/shells/enable-zsh.nix"
+    then ./use-host-shell.nix
+    else resolvePath "nixos/shells/use-host-shell.nix"
   ) {inherit pkgs;};
 
   astyle31 = pkgs.astyle.overrideAttrs (old: {
@@ -107,5 +107,5 @@ in
           export LD_LIBRARY_PATH="/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         fi
       ''
-      + enableZsh;
+      + useHostShell;
   }
