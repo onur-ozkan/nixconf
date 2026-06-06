@@ -70,7 +70,7 @@ in
       libxrandr
       zlib
 
-      (python310.withPackages (ps:
+      (python3.withPackages (ps:
         with ps; [
           pip
           setuptools
