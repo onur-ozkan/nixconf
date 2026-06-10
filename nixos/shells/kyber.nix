@@ -65,6 +65,7 @@
       pipewire
       pkg-config
       rustc
+      SDL2
       systemd
       wayland
       wget
