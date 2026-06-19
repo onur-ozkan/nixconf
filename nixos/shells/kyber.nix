@@ -29,6 +29,17 @@
     exec ${pkgs.pkg-config}/bin/pkg-config "$@"
   '';
 
+  compilerWrapper = pkgs.symlinkJoin {
+    name = "kyber-compiler-wrapper";
+    paths =
+      map
+      (name:
+        pkgs.writeShellScriptBin name ''
+          exec ${pkgs.gcc}/bin/${name} -I${pkgs.vulkan-headers}/include -L${pkgs.zlib}/lib "$@"
+        '')
+      ["cc" "c++" "gcc" "g++"];
+  };
+
   targetPackages = p:
     (with p; [
       alsa-lib
@@ -42,6 +53,7 @@
       gcc
       gettext
       git
+      glslang
       gnumake
       libdrm
       libglvnd
@@ -69,6 +81,8 @@
       rustc
       SDL2
       systemd
+      vulkan-headers
+      vulkan-loader
       wayland
       wget
       xorgproto
@@ -93,7 +107,7 @@ in
       export PYTHONPATH="${pythonPath}''${PYTHONPATH:+:$PYTHONPATH}"
       export BINDGEN_EXTRA_CLANG_ARGS="-isystem /usr/include"
       export BINDGEN_EXTRA_CLANG_ARGS_x86_64_unknown_linux_gnu="-isystem /usr/include"
-      export PATH="${pkgConfigWrapper}/bin:$PATH"
+      export PATH="${compilerWrapper}/bin:${pkgConfigWrapper}/bin:$PATH"
       unset AS
     '';
   })
