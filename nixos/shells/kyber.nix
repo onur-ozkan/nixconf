@@ -9,8 +9,8 @@
   ) {inherit pkgs;};
 
   enterHostShell = pkgs.writeShellScript "kyber-enter" (useHostShell + ''
-    exec bash
-  '');
+      exec bash
+    '');
 
   pythonPackages = ps:
     with ps; [
@@ -44,10 +44,12 @@
       git
       gnumake
       libdrm
+      libglvnd
       libinput
       libopus
       libpulseaudio
       libtool
+      libvdpau
       libx11
       libxcb
       libxcursor
