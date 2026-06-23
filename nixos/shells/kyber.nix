@@ -29,18 +29,41 @@
     exec ${pkgs.pkg-config}/bin/pkg-config "$@"
   '';
 
+  vulkanHeaders = p:
+    p.vulkan-headers.overrideAttrs {
+      version = "1.4.313";
+      src = p.fetchurl {
+        url = "https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.4.313.tar.gz";
+        hash = "sha256-8ymLjcYgUwSTKWdZhYpptiL5js7KDox1SIrSAAd4FI8=";
+      };
+    };
+
+  vulkanLoader = p:
+    (p.vulkan-loader.override {
+      vulkan-headers = vulkanHeaders p;
+    }).overrideAttrs {
+      version = "1.4.313";
+      src = p.fetchurl {
+        url = "https://github.com/KhronosGroup/Vulkan-Loader/archive/refs/tags/v1.4.313.tar.gz";
+        hash = "sha256-DCQ2mTWX9b0O5CC2snYydY7Tq0OQQ9JReV/RPU5wovM=";
+      };
+    };
+
   compilerWrapper = pkgs.symlinkJoin {
     name = "kyber-compiler-wrapper";
     paths =
       map
       (name:
         pkgs.writeShellScriptBin name ''
-          exec ${pkgs.gcc}/bin/${name} -I${pkgs.vulkan-headers}/include -L${pkgs.zlib}/lib "$@"
+          exec ${pkgs.gcc}/bin/${name} -I${vulkanHeaders pkgs}/include -L${pkgs.zlib}/lib "$@"
         '')
       ["cc" "c++" "gcc" "g++"];
   };
 
-  targetPackages = p:
+  targetPackages = p: let
+    pinnedVulkanHeaders = vulkanHeaders p;
+    pinnedVulkanLoader = vulkanLoader p;
+  in
     (with p; [
       alsa-lib
       autoconf
@@ -81,14 +104,12 @@
       rustc
       SDL2
       systemd
-      vulkan-headers
-      vulkan-loader
       wayland
       wget
       xorgproto
       zlib
     ])
-    ++ [python pkgConfigWrapper];
+    ++ [python pkgConfigWrapper pinnedVulkanHeaders pinnedVulkanLoader];
 in
   (pkgs.buildFHSEnv {
     name = "kyber";
