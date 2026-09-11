@@ -104,6 +104,7 @@
       rustc
       SDL2
       systemd
+      v4l-utils
       wayland
       wget
       xorgproto
