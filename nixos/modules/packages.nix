@@ -61,7 +61,6 @@
 
   laptopPackages = with pkgs; [
     brightnessctl
-    power-profiles-daemon
     powertop
     xinput
   ];
@@ -113,13 +112,6 @@ in {
     };
 
     services.blueman.enable = cfg.bluetooth;
-    services.power-profiles-daemon.enable = cfg.laptop;
-
-    systemd.services.power-profiles-daemon = lib.mkIf cfg.laptop {
-      wantedBy = ["graphical.target"];
-      wants = ["upower.service"];
-      after = ["upower.service"];
-    };
 
     services.upower = lib.mkIf cfg.laptop {
       enable = true;
