@@ -23,6 +23,8 @@
       ''
     else basePath;
 in {
+  imports = [(resolvePath "nixos/home/neovim.nix")];
+
   home.username = "nimda";
   home.homeDirectory = "/home/nimda";
   home.stateVersion = "26.05";
@@ -44,32 +46,6 @@ in {
     syntaxHighlighting.enable = true;
     envExtra = builtins.readFile (resolvePath ".zshenv");
     initContent = builtins.readFile (resolvePath ".zshrc");
-  };
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    vimAlias = true;
-    viAlias = true;
-    plugins = with pkgs.vimPlugins; [
-      plenary-nvim
-      telescope-nvim
-      nvim-tree-lua
-      nvim-lspconfig
-      nvim-cmp
-      cmp-nvim-lsp
-      lualine-nvim
-      (pkgs.vimUtils.buildVimPlugin {
-        pname = "dark-energy-vim";
-        version = "unstable";
-        src = pkgs.fetchFromGitHub {
-          owner = "onur-ozkan";
-          repo = "dark-energy.vim";
-          rev = "c28ec53";
-          sha256 = "sha256-P+X2biB7yt9GIMzZ09neH0r0JeHyUYQvHhBJUsEXKMo=";
-        };
-      })
-    ];
   };
 
   programs.tmux = {

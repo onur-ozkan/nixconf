@@ -5,6 +5,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # DE sources
     dwm-enhanced = {
       url = "github:onur-ozkan/dwm-enhanced?rev=04ef3ef58a069a1c8dde81dc88aaf8096f8db0ee";
       flake = false;
@@ -29,8 +31,52 @@
       url = "github:onur-ozkan/sbs?rev=2cf5b9838a2da25522f61d7b29448fda81dc0167";
       flake = false;
     };
+
+    # Dev tooling
     mreply = {
       url = "github:onur-ozkan/mreply?rev=a2034f683c41b7a3e7d265aac0906b493c9a3da3";
+      flake = false;
+    };
+
+    # Neovim plugins
+    vim-plenary = {
+      url = "github:nvim-lua/plenary.nvim?rev=74b06c6c75e4eeb3108ec01852001636d85a932b";
+      flake = false;
+    };
+    vim-telescope = {
+      url = "github:nvim-telescope/telescope.nvim?rev=40aedd8a68c78a656a10a8d62d80c54af59420fb";
+      flake = false;
+    };
+    vim-tree = {
+      url = "github:nvim-tree/nvim-tree.lua?rev=8d814495983e8db87d02d2f1da293f25b2fd1bdc";
+      flake = false;
+    };
+    vim-lspconfig = {
+      url = "github:neovim/nvim-lspconfig?rev=ffd261c09c3dabd0bf1a438f47a8ae3b22f3c3ff";
+      flake = false;
+    };
+    vim-cmp = {
+      url = "github:hrsh7th/nvim-cmp?rev=2ffe79f1f021def8dd1fcd81deb16f1bb0d989f3";
+      flake = false;
+    };
+    vim-cmp-lsp = {
+      url = "github:hrsh7th/cmp-nvim-lsp?rev=cbc7b02bb99fae35cb42f514762b89b5126651ef";
+      flake = false;
+    };
+    vim-cmp-buffer = {
+      url = "github:hrsh7th/cmp-buffer?rev=b74fab3656eea9de20a9b8116afa3cfc4ec09657";
+      flake = false;
+    };
+    vim-cmp-path = {
+      url = "github:hrsh7th/cmp-path?rev=c642487086dbd9a93160e1679a1327be111cbc25";
+      flake = false;
+    };
+    vim-lualine = {
+      url = "github:nvim-lualine/lualine.nvim?rev=221ce6b2d999187044529f49da6554a92f740a96";
+      flake = false;
+    };
+    vim-dark-energy = {
+      url = "github:onur-ozkan/dark-energy.vim?rev=c28ec53530d1001edecb5b49517f70342e380db3";
       flake = false;
     };
   };
@@ -67,7 +113,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = {
-            inherit overrideRoot repoRoot resolvePath;
+            inherit inputs overrideRoot repoRoot resolvePath;
           };
           home-manager.users.nimda = import (resolvePath "nixos/home");
         }
