@@ -67,7 +67,7 @@ local config = {
     inactive_sections = {
         -- these are to remove the defaults
         lualine_a = {},
-        lualine_v = {},
+        lualine_b = {},
         lualine_y = {},
         lualine_z = {},
         lualine_c = {},
@@ -121,7 +121,7 @@ ins_left {
             ['!'] = colors.red,
             t = colors.red
         }
-        vim.api.nvim_command('hi! LualineMode guifg=' .. mode_color[vim.fn.mode()] .. " guibg=" .. colors.bg)
+        vim.api.nvim_command('hi! LualineMode guifg=' .. (mode_color[vim.fn.mode()] or colors.fg) .. " guibg=" .. colors.bg)
         return ''
     end,
     color = "LualineMode",
@@ -198,18 +198,13 @@ end}
 ins_right {
     function()
         local msg = 'No Active Lsp'
-        local buf_ft = vim.bo[0].filetype
-        local clients = vim.lsp.get_clients()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
         if next(clients) == nil then
             return msg
         end
-        for _, client in ipairs(clients) do
-            local filetypes = client.config.filetypes
-            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                return client.name
-            end
-        end
-        return msg
+        return table.concat(vim.tbl_map(function(client)
+            return client.name
+        end, clients), ', ')
     end,
     icon = ' LSP:',
     color = {

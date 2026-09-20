@@ -1,7 +1,6 @@
-local lspconfig = require 'lspconfig'
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
     local function buf_set_keymap(...)
         vim.api.nvim_buf_set_keymap(bufnr, ...)
     end
@@ -29,58 +28,22 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.api.nvim_command("Telescope diagnostics")<CR>', opts)
     buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.format { async = true }<CR>', opts)
-    buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-    buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+    buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.jump({ count = -1, float = true })<CR>', opts)
+    buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.jump({ count = 1, float = true })<CR>', opts)
     buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
 end
 
--- Diagnostic signs
-vim.fn.sign_define("LspDiagnosticsSignError", {
-    text = "",
-    texthl = ""
-})
-vim.fn.sign_define("LspDiagnosticsSignWarning", {
-    text = "",
-    texthl = ""
-})
-vim.fn.sign_define("LspDiagnosticsSignInformation", {
-    text = "",
-    texthl = ""
-})
-vim.fn.sign_define("LspDiagnosticsSignHint", {
-    text = "",
-    texthl = ""
-})
-
--- LSP Borders
--- local _border = "single"
--- 
--- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
---   vim.lsp.handlers.hover, {
---     border = _border
---   }
--- )
--- 
--- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
---   vim.lsp.handlers.signature_help, {
---     border = _border
---   }
--- )
--- 
--- vim.diagnostic.config{
---   float={border=_border}
--- }
--- 
--- require('lspconfig.ui.windows').default_options = {
---   border = _border
--- }
--- LSP Borders
-
--- Diagnostic config
+-- Diagnostic signs and virtual text use the current Neovim API.
 vim.diagnostic.config({
-    virtual_text = {
-        prefix = '■'
-    }
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = '',
+            [vim.diagnostic.severity.WARN] = '',
+            [vim.diagnostic.severity.INFO] = '',
+            [vim.diagnostic.severity.HINT] = '',
+        },
+    },
+    virtual_text = { prefix = '■' },
 })
 
 -- Autocomplete
@@ -154,30 +117,23 @@ vim.cmd [[
 
 -- c/cpp
 vim.lsp.config('ccls', {
-	autostart = false,
-	cmd = { 'ccls' },
-	on_attach = on_attach,
-	capabilities = capabilities,
-	init_options = {
-		cache = {
-			directory = ".cache"
-		}
-	},
-	clang = {
-		excludeArgs = { "-frounding-math"},
-		extraArgs = { "--gcc-toolchain=/usr"}
-	},
-	default_config = {
-	  root_dir = [[root_pattern("compile_commands.json", ".ccls", ".git")]]
-	}
+    on_attach = on_attach,
+    capabilities = capabilities,
+    root_markers = { 'compile_commands.json', '.ccls', '.git' },
+    init_options = {
+        cache = { directory = '.cache' },
+        clang = {
+            excludeArgs = { '-frounding-math' },
+            extraArgs = { '--gcc-toolchain=/usr' },
+        },
+    },
 })
 -- c/cpp
 
 -- rust
 vim.lsp.config('rust_analyzer', {
-	autostart = false,
-	on_attach = on_attach,
-	capabilities = capabilities
+    on_attach = on_attach,
+    capabilities = capabilities,
 })
 
 local function rustc_expand()
@@ -229,7 +185,6 @@ vim.api.nvim_create_user_command('RustcExpand', rustc_expand, {})
 
 -- golang
 vim.lsp.config('gopls', {
-	autostart = false,
 	on_attach = on_attach,
 	capabilities = capabilities
 })
@@ -237,7 +192,6 @@ vim.lsp.config('gopls', {
 
 -- python
 vim.lsp.config('pyright', {
-	autostart = false,
 	on_attach = on_attach,
 	capabilities = capabilities
 })
