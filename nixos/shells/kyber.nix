@@ -8,7 +8,8 @@
     else resolvePath "nixos/shells/use-host-shell.nix"
   ) {inherit pkgs;};
 
-  enterHostShell = pkgs.writeShellScript "kyber-enter" (useHostShell + ''
+  enterHostShell = pkgs.writeShellScript "kyber-enter" (useHostShell
+    + ''
       exec bash
     '');
 
@@ -69,7 +70,6 @@
       autoconf
       automake
       bison
-      cargo
       cargo-c
       cmake
       flex
@@ -101,7 +101,6 @@
       ninja
       pipewire
       pkg-config
-      rustc
       SDL2
       systemd
       v4l-utils
