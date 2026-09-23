@@ -25,6 +25,12 @@ require'nvim-tree'.setup {
 	hijack_netrw = true,
 	hijack_unnamed_buffer_when_opening = false,
 	sort_by = "name",
+	tab = {
+		sync = {
+			open = true,
+			close = true,
+		},
+	},
 	view = {
 		width = 40,
 		side = "right",
@@ -96,7 +102,7 @@ require'nvim-tree'.setup {
 			global = false,
 		},
 		open_file = {
-			quit_on_open = true,
+			quit_on_open = false,
 			resize_window = true,
 			window_picker = {
 				enable = false,
