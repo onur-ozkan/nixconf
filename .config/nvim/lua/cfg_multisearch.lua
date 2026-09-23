@@ -1,31 +1,20 @@
-local nvim_api = require 'nvim-tree.api'
-
 local M = {}
 
--- Directory names excluded from Files search and NvimTree.
-M.config = {
-    ignored_paths = { '.git', 'target' },
-}
-
-local views = { 'Files', 'Grep', 'Commits' }
+local views = { 'Grep', 'Commits' }
 local state = {
     active = false,
     closing = false,
-    view = 'Files',
+    view = 'Grep',
     wins = {},
     bufs = {},
     content_win = nil,
     content_buf = nil,
-    queries = { Files = '', Grep = '', Commits = '' },
+    queries = { Grep = '', Commits = '' },
     results = {},
     cwd = nil,
     request_id = 0,
     preview_id = 0,
     setting_prompt = false,
-    file_root = nil,
-    file_index = nil,
-    file_search_timer = nil,
-    tabpage = nil,
 }
 
 local augroup = vim.api.nvim_create_augroup('Multisearch', { clear = true })
@@ -46,7 +35,7 @@ local function normal_float(bufnr, config, enter)
     vim.wo[winid].relativenumber = false
     vim.wo[winid].signcolumn = 'no'
     vim.wo[winid].cursorline = true
-    -- Use the Files background in every pane.
+    -- Match the NvimTree background in every pane.
     vim.wo[winid].winhighlight = 'Normal:NvimTreeNormal,NormalNC:NvimTreeNormal,NormalFloat:NvimTreeNormal,FloatBorder:NvimTreeNormalFloatBorder'
     return winid
 end
@@ -116,10 +105,6 @@ end
 local focus_content
 
 local function focus_results()
-    if state.view == 'Files' then
-        focus_content()
-        return
-    end
     if valid(state.wins.results) then
         vim.cmd 'stopinsert'
         vim.api.nvim_set_current_win(state.wins.results)
@@ -208,20 +193,8 @@ local function clear_content_keymaps(bufnr)
 end
 
 local function close_content()
-    if state.content_buf and vim.api.nvim_buf_is_valid(state.content_buf)
-        and nvim_api.tree.is_tree_buf(state.content_buf) then
-        local current_tabpage = vim.api.nvim_get_current_tabpage()
-        if state.tabpage and vim.api.nvim_tabpage_is_valid(state.tabpage) and current_tabpage ~= state.tabpage then
-            vim.api.nvim_set_current_tabpage(state.tabpage)
-        end
-        nvim_api.tree.close_in_this_tab()
-        if vim.api.nvim_tabpage_is_valid(current_tabpage) and vim.api.nvim_get_current_tabpage() ~= current_tabpage then
-            vim.api.nvim_set_current_tabpage(current_tabpage)
-        end
-    else
-        clear_content_keymaps(state.content_buf)
-        close_win(state.content_win)
-    end
+    clear_content_keymaps(state.content_buf)
+    close_win(state.content_win)
     state.content_win = nil
     state.content_buf = nil
 end
@@ -239,13 +212,6 @@ local function close_surface()
     state.wins = {}
     state.bufs = {}
     state.results = {}
-    if state.file_search_timer then
-        state.file_search_timer:stop()
-        state.file_search_timer:close()
-        state.file_search_timer = nil
-    end
-    state.file_index = nil
-    state.tabpage = nil
     state.active = false
     state.closing = false
 end
@@ -328,97 +294,6 @@ local function show_commit_preview(result)
     end)
 end
 
-local function build_file_index()
-    local ignored = {}
-    for _, path in ipairs(M.config.ignored_paths) do
-        ignored[path] = true
-    end
-    local index = {}
-    local function scan(directory)
-        local handle = vim.uv.fs_scandir(directory)
-        if not handle then
-            return
-        end
-        while true do
-            local name, type = vim.uv.fs_scandir_next(handle)
-            if not name then
-                break
-            end
-            if not ignored[name] then
-                local path = vim.fs.joinpath(directory, name)
-                local relative = vim.fs.relpath(state.file_root, path) or name
-                table.insert(index, { path = path, relative = relative:lower(), type = type })
-                if type == 'directory' then
-                    scan(path)
-                end
-            end
-        end
-    end
-    scan(state.file_root)
-    state.file_index = index
-end
-
-local function refresh_files_now()
-    if not state.active or state.view ~= 'Files' or not valid(state.content_win) then
-        return
-    end
-
-    if not state.file_index then
-        build_file_index()
-    end
-
-    local needle = state.queries.Files:lower()
-    local matches = {}
-    for _, entry in ipairs(state.file_index) do
-        if entry.relative:find(needle, 1, true) then
-            table.insert(matches, entry)
-            if #matches == 100 then
-                break
-            end
-        end
-    end
-
-    if #matches == 0 then
-        vim.notify('No files or directories match: ' .. state.queries.Files, vim.log.levels.INFO)
-        return
-    end
-
-    local match = matches[1]
-    for _, candidate in ipairs(matches) do
-        if candidate.relative == needle and candidate.type == 'directory' then
-            match = candidate
-            break
-        end
-    end
-
-    local root = match.type == 'directory' and match.path or vim.fs.dirname(match.path)
-    nvim_api.tree.change_root(root)
-    if match.type == 'directory' then
-        nvim_api.tree.expand_all()
-    else
-        nvim_api.tree.find_file({ buf = match.path, open = true, winid = state.content_win, focus = false })
-    end
-end
-
-local function refresh_files()
-    if not valid(state.content_win) then
-        return
-    end
-    if state.queries.Files == '' then
-        if state.file_search_timer then
-            state.file_search_timer:stop()
-        end
-        nvim_api.tree.change_root(state.file_root)
-        return
-    end
-
-    if not state.file_search_timer then
-        state.file_search_timer = vim.uv.new_timer()
-    end
-    state.file_search_timer:stop()
-    state.file_search_timer:start(100, 0, vim.schedule_wrap(refresh_files_now))
-end
-
 local function refresh_grep()
     local query = state.queries.Grep
     if query == '' then
@@ -488,9 +363,7 @@ local function refresh_commits()
 end
 
 local function refresh_current()
-    if state.view == 'Files' then
-        refresh_files()
-    elseif state.view == 'Grep' then
+    if state.view == 'Grep' then
         refresh_grep()
     else
         refresh_commits()
@@ -516,29 +389,16 @@ end
 
 local function create_content()
     local g = geometry()
-    local is_files = state.view == 'Files'
-    local row = is_files and (g.row + 4) or (g.row + g.results_height + 5)
-    local height = is_files and (g.height - 4) or g.content_height
     local content_buf = vim.api.nvim_create_buf(false, true)
-    local content_win = normal_float(content_buf, float_config(g, row, height, state.view), false)
+    local content_win = normal_float(content_buf,
+        float_config(g, g.row + g.results_height + 5, g.content_height, state.view), false)
     state.content_win = content_win
     state.content_buf = content_buf
 
-    if state.view == 'Files' then
-        if nvim_api.tree.is_visible() then
-            nvim_api.tree.close_in_this_tab()
-        end
-        nvim_api.tree.open({ winid = content_win, focus = false })
-        state.content_buf = vim.api.nvim_win_get_buf(content_win)
-        -- Keep the Files background stable on focus.
-        vim.wo[content_win].winhighlight = 'Normal:NvimTreeNormal,NormalNC:NvimTreeNormal,NormalFloat:NvimTreeNormal,FloatBorder:NvimTreeNormalFloatBorder'
-        vim.wo[content_win].cursorline = false
-    else
-        vim.bo[content_buf].bufhidden = 'wipe'
-        vim.bo[content_buf].modifiable = false
-        vim.bo[content_buf].filetype = state.view == 'Commits' and 'git' or ''
-        install_content_mappings(content_buf)
-    end
+    vim.bo[content_buf].bufhidden = 'wipe'
+    vim.bo[content_buf].modifiable = false
+    vim.bo[content_buf].filetype = state.view == 'Commits' and 'git' or ''
+    install_content_mappings(content_buf)
 end
 
 local function configure_results_pane(bufnr)
@@ -557,17 +417,6 @@ local function configure_results_pane(bufnr)
             end
         end,
     })
-end
-
-local function ensure_results_pane()
-    if valid(state.wins.results) then
-        return
-    end
-
-    local g = geometry()
-    state.bufs.results = vim.api.nvim_create_buf(false, true)
-    state.wins.results = normal_float(state.bufs.results, float_config(g, g.row + 4, g.results_height, nil), false)
-    configure_results_pane(state.bufs.results)
 end
 
 local function create_surface()
@@ -614,12 +463,10 @@ function M.in_git_repository()
 end
 
 function M.open(view)
-    view = vim.tbl_contains(views, view) and view or 'Files'
+    view = vim.tbl_contains(views, view) and view or 'Grep'
     if not state.active then
         state.active = true
-        state.tabpage = vim.api.nvim_get_current_tabpage()
         state.cwd = vim.fn.getcwd()
-        state.file_root = state.cwd
         create_surface()
     else
         state.queries[state.view] = current_query()
@@ -627,13 +474,6 @@ function M.open(view)
     end
 
     state.view = view
-    if view == 'Files' then
-        close_win(state.wins.results)
-        state.wins.results = nil
-        state.bufs.results = nil
-    else
-        ensure_results_pane()
-    end
     render_tabs()
     render_prompt()
     create_content()
@@ -645,35 +485,9 @@ function M.close()
     close_surface()
 end
 
-function M.toggle_files()
-    if state.active and state.view == 'Files' then
-        close_surface()
-    else
-        M.open('Files')
-    end
-end
-
-function M.focus_down_from_tree()
-    if state.active and state.view == 'Files' then
-        focus_content()
-    end
-end
-
-function M.focus_up_from_tree()
-    if state.active and state.view == 'Files' then
-        focus_prompt()
-    end
-end
-
-function M.switch_from_tree(view)
-    if state.active then
-        M.open(view)
-    end
-end
-
 function M.setup()
     vim.api.nvim_create_user_command('Multisearch', function(opts)
-        M.open(opts.args ~= '' and opts.args or 'Files')
+        M.open(opts.args ~= '' and opts.args or 'Grep')
     end, {
         nargs = '?',
         complete = function()

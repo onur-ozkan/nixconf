@@ -1,50 +1,20 @@
 local nvim_api = require 'nvim-tree.api'
-local multisearch = require 'cfg_multisearch'
 
 local ignored_paths = vim.tbl_map(function(path)
     return '^' .. vim.pesc(path) .. '$'
-end, multisearch.config.ignored_paths)
+end, { '.git', 'target' })
 
 local function on_attach(bufnr)
     nvim_api.map.on_attach.default(bufnr)
 
     local opts = { buffer = bufnr, noremap = true, silent = true }
 
-    vim.keymap.set('n', '<C-Right>', function()
-        require('cfg_multisearch').switch_from_tree('Grep')
-    end, opts)
-    vim.keymap.set('n', '<C-Left>', function()
-        require('cfg_multisearch').switch_from_tree('Commits')
-    end, opts)
-    vim.keymap.set('n', '<C-Down>', function()
-        require('cfg_multisearch').focus_down_from_tree()
-    end, opts)
-    vim.keymap.set('n', '<C-Up>', function()
-        require('cfg_multisearch').focus_up_from_tree()
-    end, opts)
-    vim.keymap.set('n', '<Esc>', function()
-        require('cfg_multisearch').close()
-    end, opts)
-    vim.keymap.set('n', '<CR>', function()
-        local node = nvim_api.tree.get_node_under_cursor()
-        nvim_api.node.open.no_window_picker(node)
-        if node and node.type == 'file' then
-            vim.schedule(function()
-                require('cfg_multisearch').close()
-            end)
-        end
-    end, opts)
-    local open_in_tab = function()
-        local node = nvim_api.tree.get_node_under_cursor()
-        nvim_api.node.open.tab(node)
-        if node and node.type == 'file' then
-            vim.schedule(function()
-                require('cfg_multisearch').close()
-            end)
-        end
-    end
-    vim.keymap.set('n', 't', open_in_tab, opts)
-    vim.keymap.set('n', '<C-t>', open_in_tab, opts)
+    vim.keymap.set('n', '/', function()
+        require('cfg_telescope').find_files()
+    end, vim.tbl_extend('force', opts, { desc = 'Live file picker' }))
+    vim.keymap.set('n', '<Esc>', nvim_api.tree.close, opts)
+    vim.keymap.set('n', 't', nvim_api.node.open.tab, opts)
+    vim.keymap.set('n', '<C-t>', nvim_api.node.open.tab, opts)
 end
 
 require'nvim-tree'.setup {
