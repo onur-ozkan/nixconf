@@ -62,6 +62,7 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = false -- turn off snippets
 
 cmp.setup({
+    completion = { autocomplete = false },
     mapping = {
         ['<Tab>'] = function(fallback)
             if cmp.visible() then
@@ -75,8 +76,6 @@ cmp.setup({
         ['<S-Tab>'] = function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-            elseif has_words_before() then
-                cmp.complete()
             else
                 fallback()
             end
