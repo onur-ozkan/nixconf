@@ -78,12 +78,14 @@
       git
       glslang
       gnumake
+      libcap
       libdrm
       libglvnd
       libinput
       libopus
       libpulseaudio
       libtool
+      libva
       libvdpau
       libx11
       libxcb
