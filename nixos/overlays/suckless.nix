@@ -39,7 +39,10 @@ in {
   };
 
   dwmblocks-enhanced = mkSucklessOverride {
-    basePackage = prev.dwmblocks;
+    basePackage = prev.dwmblocks.overrideAttrs (_: {
+      # Upstream already has the GCC 15-compatible signal-handler signature.
+      postPatch = "";
+    });
     pname = "dwmblocks-enhanced";
     srcName = "dwmblocks-enhanced";
   };

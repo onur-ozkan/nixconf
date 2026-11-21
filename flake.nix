@@ -16,19 +16,19 @@
       flake = false;
     };
     dmenu-enhanced = {
-      url = "github:onur-ozkan/dmenu-enhanced?rev=8af4894f35bc874ae84e3c523b7e87c2f1bfce6c";
+      url = "github:onur-ozkan/dmenu-enhanced?rev=d1d8024cd87bdacfea0f53aa8935cd210fa547e8";
       flake = false;
     };
     dwmblocks-enhanced = {
-      url = "github:onur-ozkan/dwmblocks-enhanced?rev=04d53927255638ca2ea075ac41dc04c1c0d75305";
+      url = "github:onur-ozkan/dwmblocks-enhanced?rev=3ff1e40062b555bfbf00321ecb090dd994b0a367";
       flake = false;
     };
     slock-enhanced = {
-      url = "github:onur-ozkan/slock-enhanced?rev=a340fb8f74c15c8d4f3586b5341c915485c615a4";
+      url = "github:onur-ozkan/slock-enhanced?rev=29af2c75bfe9cfac1f1108cd96ce65b0affb75c1";
       flake = false;
     };
     sbs = {
-      url = "github:onur-ozkan/sbs?rev=2cf5b9838a2da25522f61d7b29448fda81dc0167";
+      url = "github:onur-ozkan/sbs?rev=cd378772b67210a6580443a13fe7a69d065bfd37";
       flake = false;
     };
 
