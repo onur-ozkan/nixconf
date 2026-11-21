@@ -14,6 +14,9 @@
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ extraNativeBuildInputs;
       makeFlags = (old.makeFlags or []) ++ ["PREFIX=$(out)"];
       installFlags = (old.installFlags or []) ++ ["PREFIX=$(out)"];
+      preBuild = (old.preBuild or "") + ''
+        make clean
+      '';
     });
 in {
   dwm-enhanced = mkSucklessOverride {

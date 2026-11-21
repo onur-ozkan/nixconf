@@ -8,11 +8,11 @@
 
     # DE sources
     dwm-enhanced = {
-      url = "github:onur-ozkan/dwm-enhanced?rev=92adc3709436f41b76d2bd1470d2bfaaa9aa1490";
+      url = "github:onur-ozkan/dwm-enhanced?rev=5e0e416063d460c4c39229ddd2287b9ed3deb772";
       flake = false;
     };
     st-enhanced = {
-      url = "github:onur-ozkan/st-enhanced?rev=25fd67c02859822a966d3dc1adbd218647329946";
+      url = "github:onur-ozkan/st-enhanced?rev=2995dbbc07b84297cbd357432f126e62e8c10437";
       flake = false;
     };
     dmenu-enhanced = {
