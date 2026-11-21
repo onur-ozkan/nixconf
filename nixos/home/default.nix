@@ -23,7 +23,10 @@
       ''
     else basePath;
 in {
-  imports = [(resolvePath "nixos/home/neovim.nix")];
+  imports = [
+    (resolvePath "nixos/home/neovim.nix")
+    (resolvePath "nixos/home/opencode.nix")
+  ];
 
   home.username = "nimda";
   home.homeDirectory = "/home/nimda";

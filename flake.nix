@@ -33,6 +33,7 @@
     };
 
     # Dev tooling
+    opencode.url = "github:anomalyco/opencode/v1.19.5";
     mreply = {
       url = "github:onur-ozkan/mreply?rev=a2034f683c41b7a3e7d265aac0906b493c9a3da3";
       flake = false;
