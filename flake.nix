@@ -51,6 +51,10 @@
       url = "github:nvim-tree/nvim-tree.lua?rev=8d814495983e8db87d02d2f1da293f25b2fd1bdc";
       flake = false;
     };
+    vim-mini-diff = {
+      url = "github:nvim-mini/mini.diff?rev=91d6ce4b7f400439fe761f01a58280f2c0f99c01";
+      flake = false;
+    };
     vim-lspconfig = {
       url = "github:neovim/nvim-lspconfig?rev=ffd261c09c3dabd0bf1a438f47a8ae3b22f3c3ff";
       flake = false;

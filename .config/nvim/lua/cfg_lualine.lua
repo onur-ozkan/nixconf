@@ -258,4 +258,15 @@ ins_right {
     padding = { left = 1, right = 1 }
 }
 
+config.extensions = {
+    {
+        filetypes = { 'projectsearch' },
+        sections = {
+            lualine_a = {}, lualine_b = {},
+            lualine_c = { function() return 'Search · ' .. (vim.b.project_search_hint or '') end },
+            lualine_x = {}, lualine_y = {}, lualine_z = {},
+        },
+    },
+}
+
 lualine.setup(config)

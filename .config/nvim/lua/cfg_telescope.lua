@@ -1,5 +1,6 @@
 local telescope = require 'telescope'
 local actions = require 'telescope.actions'
+local layout = require 'sidebar_layout'
 
 local M = {}
 
@@ -77,12 +78,6 @@ end
 
 function M.find_files()
     local editor_win = vim.fn.win_getid(vim.fn.winnr('#'))
-    local function is_editor(win)
-        return vim.api.nvim_win_is_valid(win)
-            and vim.api.nvim_win_get_config(win).relative == ''
-            and vim.bo[vim.api.nvim_win_get_buf(win)].buftype == ''
-    end
-
     require('telescope.builtin').find_files {
         cwd = vim.fn.getcwd(),
         hidden = true,
@@ -104,18 +99,16 @@ function M.find_files()
             prompt_position = 'bottom',
         },
         get_selection_window = function()
-            if is_editor(editor_win) then
-                return editor_win
-            end
-            for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-                if is_editor(win) then
-                    return win
-                end
-            end
+            local win = layout.editor(nil, editor_win)
+            if win then return win end
             vim.cmd 'leftabove vnew'
             return vim.api.nvim_get_current_win()
         end,
         attach_mappings = function(_, map)
+            local function select_file(prompt_bufnr)
+                require('cfg_history').restore(vim.api.nvim_get_current_tabpage())
+                require('git_review').normal_open(function() actions.select_default(prompt_bufnr) end)
+            end
             local function move(prompt_bufnr, direction)
                 local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
                 if not picker:get_selection() then
@@ -128,11 +121,14 @@ function M.find_files()
                 end
             end
             for _, mode in ipairs({ 'i', 'n' }) do
-                map(mode, '<Up>', function(bufnr) move(bufnr, -1) end)
-                map(mode, '<Down>', function(bufnr) move(bufnr, 1) end)
-                map(mode, '<CR>', actions.select_default)
-                map(mode, '<Esc>', actions.close)
+                map(mode, '<Up>', false)
+                map(mode, '<Down>', false)
+                map(mode, '<CR>', select_file)
             end
+            for _, key in ipairs({ '<C-h>', '<C-j>', '<C-k>', '<C-l>' }) do map('i', key, false) end
+            for _, key in ipairs({ 'k', '<C-k>' }) do map('n', key, function(bufnr) move(bufnr, -1) end) end
+            for _, key in ipairs({ 'j', '<C-j>' }) do map('n', key, function(bufnr) move(bufnr, 1) end) end
+            map('n', '<Esc>', actions.close)
             return true
         end,
     }

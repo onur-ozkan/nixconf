@@ -19,6 +19,7 @@
       dependencies = ["vim-plenary"];
     };
     vim-tree = {modules = ["nvim-tree"];};
+    vim-mini-diff = {modules = ["mini.diff"];};
     vim-lspconfig = {modules = ["lspconfig.util"];};
     vim-cmp = {modules = ["cmp"];};
     vim-cmp-lsp = {

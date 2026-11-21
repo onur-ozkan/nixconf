@@ -103,6 +103,7 @@ cmp.setup({
         end
     }
 })
+cmp.setup.filetype('projectsearch', { enabled = false })
 
 vim.cmd [[
 	hi CmpItemKind guifg=#f7ca88

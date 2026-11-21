@@ -3,7 +3,7 @@ local function setup()
     vim.cmd('filetype indent plugin on')
 
     vim.opt.showtabline = 2
-    vim.opt.tabline = [[%!v:lua.require('tab_id')()]]
+    vim.opt.tabline = [[%!v:lua.require('tab_id').render()]]
     vim.opt.shortmess:remove('S')
 
     vim.opt.number = true
@@ -22,7 +22,7 @@ local function setup()
     vim.opt.splitbelow = true
     vim.opt.splitright = false
 
-    vim.opt.laststatus = 2
+    vim.opt.laststatus = 3
     vim.opt.ruler = false
     vim.opt.showmode = false
     vim.opt.signcolumn = 'yes'
