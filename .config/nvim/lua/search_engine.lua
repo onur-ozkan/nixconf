@@ -30,10 +30,18 @@ function M.search(cwd, fields, options, callback)
         options.case and '--case-sensitive' or '--ignore-case' }
     if options.regex then table.insert(args, '--engine=auto') else table.insert(args, '--fixed-strings') end
     if options.word then table.insert(args, '--word-regexp') end
+    -- Explicit includes define the scope themselves, even if an ignored
+    -- ancestor directory would otherwise prevent ripgrep from reaching them.
+    if options.ignored or (options.filters and vim.trim(fields.include) ~= '') then
+        table.insert(args, '--no-ignore')
+    end
     if options.filters then
         for _, name in ipairs({ 'include', 'exclude' }) do
             for glob in fields[name]:gmatch('[^\n]+') do
                 glob = vim.trim(glob)
+                -- Treat directory paths as recursive globs.
+                local stat = glob ~= '' and uv.fs_stat(vim.fs.joinpath(cwd, glob))
+                if stat and stat.type == 'directory' then glob = glob:gsub('^%./', ''):gsub('/+$', '') .. '/**' end
                 if glob ~= '' then table.insert(args, '--glob=' .. (name == 'exclude' and '!' or '') .. glob) end
             end
         end

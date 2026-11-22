@@ -296,6 +296,8 @@ function M.toggle()
             { buffer = panel.buf, silent = true, desc = 'Close Git sidebar' })
         vim.keymap.set('n', '<CR>', function() open_entry(panel) end,
             { buffer = panel.buf, silent = true, desc = 'Edit file with live inline diff' })
+        vim.keymap.set('n', '<2-LeftMouse>', function() open_entry(panel) end,
+            { buffer = panel.buf, silent = true, desc = 'Edit file with live inline diff' })
         vim.keymap.set('n', '<C-p>', function() open_entry(panel, true) end,
             { buffer = panel.buf, silent = true, desc = 'Preview inline diff' })
         vim.keymap.set('n', '<Tab>', function()

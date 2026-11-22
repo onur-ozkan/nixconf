@@ -7,12 +7,12 @@ local ns = vim.api.nvim_create_namespace('ProjectSearch')
 local input_ns = vim.api.nvim_create_namespace('ProjectSearchInputs')
 local control_ns = vim.api.nvim_create_namespace('ProjectSearchControls')
 local controls = { { 'replace', 'Replace' }, { 'case', 'Match case' }, { 'word', 'Whole word' },
-    { 'regex', 'Regex' }, { 'filters', 'Filters' } }
+    { 'regex', 'Regex' }, { 'ignored', 'Include ignored files' }, { 'filters', 'Filters' } }
 local commit_controls = { { 'extended', 'Extended View' }, { 'body', 'Include Body' }, { 'case', 'Match case' },
     { 'word', 'Whole word' }, { 'regex', 'Regex' } }
 local labels = { query = 'Search', replacement = 'Replace with', include = 'Include files', exclude = 'Exclude files' }
 local placeholders = { query = 'Type to search · Enter adds a line', replacement = 'Replacement text · Enter adds a line',
-    include = 'e.g. src/** or *.lua', exclude = 'e.g. **/generated/** or *.lock' }
+    include = 'e.g. src, override/ or *.lua', exclude = 'e.g. **/generated/** or *.lock' }
 local hints = { query = 'Enter: newline', replacement = 'Enter: newline',
     include = 'One pattern per line · Empty: all files', exclude = 'One pattern per line',
     results = 'j/k: lines/sections · Enter: open match · Esc: close' }

@@ -33,18 +33,19 @@ local function scope()
     for _, ns in ipairs(namespaces) do vim.api.nvim__ns_set(ns, { wins = wins }) end
 end
 
-local function local_map(buf, mode)
-    for _, map in ipairs(vim.api.nvim_buf_get_keymap(buf, mode)) do if map.lhs == 'X' then return map end end
+local function local_map(buf, mode, lhs)
+    for _, map in ipairs(vim.api.nvim_buf_get_keymap(buf, mode)) do if map.lhs == lhs then return map end end
 end
 
 local function restore_maps(review)
-    for mode, saved in pairs(review.maps or {}) do
-        local current = local_map(review.buf, mode)
+    for _, saved in pairs(review.maps or {}) do
+        local mode, lhs = saved.mode, saved.lhs
+        local current = local_map(review.buf, mode, lhs)
         if current and current.callback == saved.callback then
-            vim.keymap.del(mode, 'X', { buffer = review.buf })
+            vim.keymap.del(mode, lhs, { buffer = review.buf })
             local old = saved.previous
             if old then
-                vim.keymap.set(mode, 'X', old.callback or old.rhs, {
+                vim.keymap.set(mode, lhs, old.callback or old.rhs, {
                     buffer = review.buf, noremap = old.noremap == 1, expr = old.expr == 1,
                     silent = old.silent == 1, nowait = old.nowait == 1, desc = old.desc,
                 })
@@ -149,18 +150,32 @@ local function reset_lines(review)
     end, review.reference.current)
 end
 
+local function goto_group(review, direction)
+    if M.current() ~= review or review.binary then return end
+    local data = diff.get_buf_data(review.buf)
+    if data and #data.hunks > 0 then diff.goto_hunk(direction, { wrap = false }) end
+end
+
 local function bind_maps(review)
-    for _, mode in ipairs({ 'n', 'x' }) do
-        local current = local_map(review.buf, mode)
-        local saved = review.maps[mode]
+    local mappings = {
+        { 'n', 'X', function() reset_lines(review) end, 'Revert current / selected diff lines' },
+        { 'x', 'X', function() reset_lines(review) end, 'Revert current / selected diff lines' },
+        { 'n', '[', function() goto_group(review, 'prev') end, 'Previous changed group' },
+        { 'n', ']', function() goto_group(review, 'next') end, 'Next changed group' },
+    }
+    for _, mapping in ipairs(mappings) do
+        local mode, lhs, callback, desc = unpack(mapping)
+        local key = mode .. lhs
+        local current = local_map(review.buf, mode, lhs)
+        local saved = review.maps[key]
         if not saved then
-            saved = { callback = function() reset_lines(review) end }
-            review.maps[mode] = saved
+            saved = { mode = mode, lhs = lhs, callback = callback }
+            review.maps[key] = saved
         end
         if not current or current.callback ~= saved.callback then
             saved.previous = current
-            vim.keymap.set(mode, 'X', saved.callback,
-                { buffer = review.buf, silent = true, desc = 'Revert current / selected diff lines' })
+            vim.keymap.set(mode, lhs, saved.callback,
+                { buffer = review.buf, silent = true, nowait = lhs == '[' or lhs == ']', desc = desc })
         end
     end
 end
@@ -171,7 +186,8 @@ function M.open(root, entry, win)
     vim.bo[buf].buflisted = true
     M.clear(vim.api.nvim_win_get_buf(win), win)
     M.clear(buf)
-    local review = vim.tbl_extend('force', entry, { root = root, win = win, buf = buf, reference = {}, maps = {}, revision = 0 })
+    local review = vim.tbl_extend('force', entry, { root = root, win = win, buf = buf, reference = {}, maps = {},
+        revision = 0, jump_pending = true })
     reviews[buf] = review
     vim.b[buf].git_diff_base = files.base(entry) == 'HEAD' and 'HEAD' or 'index'
     opening = true
@@ -188,6 +204,17 @@ function M.open(root, entry, win)
     changed()
     return review
 end
+
+-- Reference loading and MiniDiff's hunk calculation are asynchronous. Jump
+-- once after the initial calculation, including in an unfocused preview pane.
+vim.api.nvim_create_autocmd('User', { group = group, pattern = 'MiniDiffUpdated', callback = function(event)
+    local review = reviews[event.buf]
+    if not review or not review.jump_pending or not review.text or not M.valid(review) then return end
+    review.jump_pending = nil
+    local data = diff.get_buf_data(review.buf)
+    if not data or #data.hunks == 0 then return end
+    vim.api.nvim_win_call(review.win, function() diff.goto_hunk('first', { wrap = false, n_times = 1 }) end)
+end })
 
 vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, { group = group, callback = function()
     local review = reviews[vim.api.nvim_get_current_buf()]
