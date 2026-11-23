@@ -54,7 +54,10 @@
   '';
 
   networking.hostName = "nimda";
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    insertNameservers = ["1.1.1.1" "8.8.8.8"];
+  };
 
   time.timeZone = "Europe/Istanbul";
   i18n.defaultLocale = "en_US.UTF-8";
