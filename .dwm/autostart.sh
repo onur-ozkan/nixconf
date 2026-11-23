@@ -5,7 +5,7 @@ xset r rate 200 65
 
 cache_file="$HOME/.cache/sbs"
 backgrounds_dir="$HOME/.backgrounds"
-default_bg=".firewatch-dark.jpg"
+default_bg="istanbul-art.png"
 
 if [[ -f "$cache_file" ]]; then
   cached_bg="$(head -n 1 "$cache_file")"
