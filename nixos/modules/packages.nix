@@ -42,7 +42,6 @@
     st-enhanced
     unzip
     usbutils
-    vscode
     wget
     xclip
     xdg-utils
