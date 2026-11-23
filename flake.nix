@@ -8,7 +8,7 @@
 
     # DE sources
     dwm-enhanced = {
-      url = "github:onur-ozkan/dwm-enhanced?rev=a53a373285d789688d9ca6cefd06ee4193b206e3";
+      url = "github:onur-ozkan/dwm-enhanced?rev=afa8fa8067ae4af31cf2384884d57f667333c89e";
       flake = false;
     };
     st-enhanced = {
