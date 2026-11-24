@@ -84,8 +84,7 @@ in {
       basePackages
       ++ [dwmblocksEnhanced]
       ++ lib.optionals cfg.bluetooth bluetoothPackages
-      ++ lib.optionals cfg.laptop laptopPackages
-      ++ lib.optionals cfg.nvidia_driver [config.boot.kernelPackages.nvidiaPackages.production];
+      ++ lib.optionals cfg.laptop laptopPackages;
 
     fonts.packages = with pkgs; [
       noto-fonts
@@ -140,7 +139,7 @@ in {
     hardware.nvidia = lib.mkIf cfg.nvidia_driver {
       modesetting.enable = true;
       open = true;
-      package = config.boot.kernelPackages.nvidiaPackages.production;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
       powerManagement.enable = false;
     };
   };
