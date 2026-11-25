@@ -10,7 +10,7 @@ local function setup()
     map('n', '<BS>', function()
         require('cfg_git').toggle()
     end, { silent = true, desc = 'Toggle Git changes sidebar' })
-    map('n', '<C-f>', function()
+    map({ 'n', 'x', 's' }, '<C-f>', function()
         require('cfg_search').open()
     end, { silent = true, desc = 'Open project search and replace' })
     map('i', '<C-f>', '<Esc><Cmd>lua require("cfg_search").open("i")<CR>',

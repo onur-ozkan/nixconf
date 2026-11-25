@@ -312,6 +312,7 @@ local function new_buffer(s, name, value)
         vim.api.nvim_buf_attach(buf, false, { on_lines = function()
             s.cursors[name] = nil
             s.values[name] = table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), '\n')
+            if s.opening then return end
             stop(s)
             vim.schedule(function()
                 if not s.tab or not vim.api.nvim_buf_is_valid(buf) then return end
@@ -494,12 +495,39 @@ local function restore_view(s)
     update_focus(s)
 end
 
+local function selected_query()
+    local mode = vim.fn.mode()
+    -- Select modes s/S/Ctrl-S correspond to Visual v/V/Ctrl-V.
+    local selection_type = ({ s = 'v', S = 'V', ['\19'] = '\22' })[mode] or mode
+    if selection_type == 'v' or selection_type == 'V' or selection_type == '\22' then
+        local lines = vim.fn.getregion(vim.fn.getpos('v'), vim.fn.getpos('.'), {
+            type = selection_type, exclusive = vim.o.selection == 'exclusive',
+        })
+        vim.cmd('normal! ' .. vim.api.nvim_replace_termcodes('<Esc>', true, false, true))
+        return table.concat(lines, '\n')
+    end
+    -- # highlights a search match rather than entering Visual mode. Only
+    -- reuse a live highlight when the cursor is actually on that match.
+    if vim.v.hlsearch ~= 1 then return end
+    local pattern = vim.fn.getreg('/')
+    if pattern == '' then return end
+    local line, column, offset = vim.api.nvim_get_current_line(), vim.fn.col('.') - 1, 0
+    while offset <= #line do
+        local match = vim.fn.matchstrpos(line, pattern, offset)
+        if match[2] < 0 or match[2] > column then return end
+        if match[3] > column then return match[1] end
+        offset = math.max(offset + 1, match[3])
+    end
+end
+
 function M.open(source_mode, focus_mode, scope)
+    local query = not focus_mode and selected_query() or nil
     local from_search = vim.bo.filetype == 'projectsearch'
     local cwd = scope or vim.uv.fs_realpath(vim.fn.getcwd()) or vim.fn.getcwd()
     local origin_tab, origin_win = vim.api.nvim_get_current_tabpage(), vim.api.nvim_get_current_win()
     if active and active.tab == origin_tab then origin_tab, origin_win = active.origin_tab, active.origin_win end
     local s, project = project_state(cwd)
+    if s.applying then query = nil end
     if active and active ~= s then close(active) end
     active = s
     if vim.api.nvim_get_current_tabpage() == s.tab then remember(s, from_search and source_mode or nil) end
@@ -508,10 +536,21 @@ function M.open(source_mode, focus_mode, scope)
     end
     s.opening = true
     vim.cmd 'stopinsert'
+    if query ~= nil then
+        s.values.query, s.saved, s.cursors.query = query, nil, nil
+        local buf = s.bufs.query
+        if buf and vim.api.nvim_buf_is_valid(buf) then
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(query, '\n', { plain = true }))
+            vim.bo[buf].modified = false
+        end
+    end
     open_tab(s)
     vim.t[s.tab].project_search_origin = s.origin_tab
     vim.cmd 'tabmove 0'
-    if not s.saved or s.resume then request(s, 0, true); s.resume = false end
+    if not s.applying and (not s.saved or s.resume) then
+        request(s, 0, query == nil)
+        s.resume = false
+    end
     layout(s)
     if focus_mode then
         focus(s, 'modes', nil, false)
