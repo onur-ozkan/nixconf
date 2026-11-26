@@ -59,6 +59,17 @@ function M.open(root, entry, owner)
     local s = { owner = owner, row = vim.api.nvim_win_get_cursor(owner)[1], key = key }
     active = s
     render(s, { 'Loading diff summary…' })
+    if entry.submodule then
+        local args = { 'diff', '--submodule=log', '--ignore-submodules=none', '--no-ext-diff', '--no-textconv', '--no-color' }
+        if entry.section == 'staged' then args[#args + 1] = '--cached' end
+        vim.list_extend(args, { '--', entry.path })
+        if entry.rename then args[#args + 1] = entry.old_path end
+        files.run(root, args, function(output)
+            local text = output.code == 0 and vim.trim(output.stdout) or ('ERROR: ' .. vim.trim(output.stderr))
+            render(s, { vim.fn.strtrans(entry.path), text ~= '' and text or 'No submodule pointer change' })
+        end)
+        return
+    end
     files.reference(root, entry, function(reference, err)
         if active ~= s then return end
         if err then render(s, { 'ERROR: ' .. err }); return end

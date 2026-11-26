@@ -54,7 +54,7 @@ function M.lines(reference, current, first, last)
 end
 
 local function read_changes(root, entries, callback)
-    local args = { 'status', '--porcelain=v1', '-z', '--untracked-files=all', '--' }
+    local args = { 'status', '--porcelain=v2', '-z', '--untracked-files=all', '--' }
     for _, entry in ipairs(entries) do
         table.insert(args, entry.path)
         if entry.old_path then table.insert(args, entry.old_path) end
@@ -82,8 +82,8 @@ local function read_changes(root, entries, callback)
                 return
             end
             local stat = vim.uv.fs_lstat(vim.fs.joinpath(root, change.path))
-            if stat and stat.type == 'directory' then
-                callback(nil, 'Cannot revert directories')
+            if change.submodule or (stat and stat.type == 'directory') then
+                callback(nil, 'Cannot revert submodules or directories')
                 return
             end
             table.insert(changes, change)

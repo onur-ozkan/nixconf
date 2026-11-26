@@ -182,21 +182,26 @@ end
 
 function M.open(root, entry, win)
     local buf = vim.fn.bufadd(vim.fs.joinpath(root, entry.path))
-    vim.fn.bufload(buf)
+    local previous = vim.api.nvim_win_get_buf(win)
+    local origin = vim.api.nvim_get_current_win()
+    opening = true
+    local ok, err = pcall(function()
+        vim.api.nvim_set_current_win(win)
+        -- Open from disk without a swap prompt, but reuse any loaded buffer and its edits.
+        vim.cmd.buffer({ buf, mods = { hide = true, noswapfile = not vim.api.nvim_buf_is_loaded(buf) } })
+    end)
+    opening = false
+    if not ok then
+        if vim.api.nvim_win_is_valid(origin) then vim.api.nvim_set_current_win(origin) end
+        error(err)
+    end
     vim.bo[buf].buflisted = true
-    M.clear(vim.api.nvim_win_get_buf(win), win)
+    M.clear(previous, win)
     M.clear(buf)
     local review = vim.tbl_extend('force', entry, { root = root, win = win, buf = buf, reference = {}, maps = {},
         revision = 0, jump_pending = true })
     reviews[buf] = review
     vim.b[buf].git_diff_base = files.base(entry) == 'HEAD' and 'HEAD' or 'index'
-    opening = true
-    local ok, err = pcall(function()
-        vim.api.nvim_set_current_win(win)
-        vim.api.nvim_win_set_buf(win, buf)
-    end)
-    opening = false
-    if not ok then M.clear(buf); error(err) end
     bind_maps(review)
     scope()
     review.binary = files.contents(buf):find('\0', 1, true) ~= nil or vim.bo[buf].binary

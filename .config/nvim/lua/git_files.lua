@@ -3,8 +3,7 @@ local roots = {}
 local refreshing, pending
 local revisions = {}
 
-function M.run(directory, args, callback, options)
-    local command = vim.list_extend({ 'git', '--literal-pathspecs' }, args)
+local function run(directory, command, callback, options)
     local done = vim.schedule_wrap(callback)
     local ok, process = pcall(vim.system, command, vim.tbl_extend('force', {
         cwd = directory,
@@ -12,6 +11,11 @@ function M.run(directory, args, callback, options)
     }, options or {}), done)
     if ok then return process end
     done { code = 1, stdout = '', stderr = tostring(process) }
+end
+
+function M.run(root, args, callback, options)
+    -- Do not fall back to the parent repository if a submodule is deinitialized.
+    return run(root, vim.list_extend({ 'git', '--literal-pathspecs', '--git-dir=.git', '--work-tree=.' }, args), callback, options)
 end
 
 function M.directory(path)
@@ -35,7 +39,7 @@ function M.root(directory, callback)
     end
     cached = { waiters = { callback } }
     roots[directory] = cached
-    M.run(directory, { 'rev-parse', '--show-toplevel' }, function(output)
+    run(directory, { 'git', 'rev-parse', '--show-toplevel' }, function(output)
         cached.time = vim.uv.now()
         if output.code == 0 then
             cached.root = output.stdout:gsub('\n$', '')
@@ -107,28 +111,34 @@ end
 
 function M.changes(text)
     local result = {}
-    local records = vim.split(text, '\0', { plain = true, trimempty = true })
-    local index = 1
-    while index <= #records do
-        local record = records[index]
-        local x, y, path = record:sub(1, 1), record:sub(2, 2), record:sub(4)
-        local old_path
-        if x == 'R' or x == 'C' or y == 'R' or y == 'C' then
-            index = index + 1
-            old_path = records[index]
+    local records = text:gmatch('([^%z]+)%z')
+    for record in records do
+        local kind = record:sub(1, 1)
+        local xy, sub, modes, path, old_path
+        if kind == '?' or kind == '!' then
+            xy, path = kind .. kind, record:sub(3)
+        elseif kind == 'u' then
+            xy, sub, modes, path = record:match('^u (%S+) (%S+) (%d+ %d+ %d+ %d+) %x+ %x+ %x+ (.+)$')
+        elseif kind == '2' then
+            xy, sub, modes, path = record:match('^2 (%S+) (%S+) (%d+ %d+ %d+) %x+ %x+ %S+ (.+)$')
+            old_path = records()
+        else
+            xy, sub, modes, path = record:match('^1 (%S+) (%S+) (%d+ %d+ %d+) %x+ %x+ (.+)$')
         end
-        table.insert(result, {
-            x = x, y = y, path = path, old_path = old_path,
-            conflict = x == 'U' or y == 'U' or x .. y == 'AA' or x .. y == 'DD',
-        })
-        index = index + 1
+        if path then
+            xy = xy:gsub('%.', ' ')
+            -- The recorded mode also identifies gitlinks with no working checkout.
+            result[#result + 1] = { x = xy:sub(1, 1), y = xy:sub(2, 2), path = path,
+                old_path = old_path, conflict = kind == 'u',
+                submodule = sub and (sub:sub(1, 1) == 'S' or modes:find('160000', 1, true)) and sub or nil }
+        end
     end
     return result
 end
 
-local function statuses(text)
+local function statuses(changes)
     local result = {}
-    for _, change in ipairs(M.changes(text)) do
+    for _, change in ipairs(changes) do
         local x, y, path = change.x, change.y, change.path
         if x == '?' then
             result[path] = '?'
@@ -208,26 +218,27 @@ function M.refresh(full_roots, callback)
         for root, files in pairs(repositories) do
             local full = full_roots[root] == true
             local revision = revisions[root]
-            local args = { 'status', '--porcelain=v1', '-z', '--untracked-files=all' }
+            local args = { 'status', '--porcelain=v2', '-z', '--untracked-files=all' }
             if not full then
                 table.insert(args, '--ignored=traditional')
                 table.insert(args, '--')
                 for _, file in ipairs(files) do table.insert(args, file.relative) end
             end
-            local function complete(output, state)
-                if revisions[root] == revision then
-                    results[root] = { raw = output.stdout, full = full, error = output.code ~= 0 and output or nil }
-                    if state then apply(files, state) end
-                end
-            end
             M.run(root, args, function(output)
+                local changes
                 local function done(state)
-                    complete(output, state)
+                    if revisions[root] == revision then
+                        results[root] = { raw = output.stdout, changes = changes, full = full,
+                            error = output.code ~= 0 and output or nil }
+                        if state then apply(files, state) end
+                    end
                     outstanding = outstanding - 1
                     if outstanding == 0 then finish() end
                 end
                 if output.code ~= 0 or revisions[root] ~= revision then done(); return end
-                local state = statuses(output.stdout)
+                if #files == 0 then done(); return end
+                changes = M.changes(output.stdout)
+                local state = statuses(changes)
                 local ignored = { 'ls-files', '--others', '--ignored', '--exclude-standard', '-z', '--' }
                 if full then
                     for _, file in ipairs(files) do
